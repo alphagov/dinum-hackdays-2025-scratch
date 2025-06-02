@@ -1,6 +1,6 @@
 {% extends '_' + design_type + '.html' %}
 
 {% block content %}
-<h1 class="govuk-heading-xl">Hello world!</h1>
+<h1 class="{{ design_dictionary.h1 }}">Hello world!</h1>
 <p class="govuk-body">Welcome {{ user["name"] }}</p>
 {% endblock %}

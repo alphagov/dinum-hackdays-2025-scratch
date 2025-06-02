@@ -5,6 +5,7 @@ from flask import Flask, redirect, url_for, session, render_template, request
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 from auth_helpers import RequireUser, UserOptional
+from design_helpers import design_dictionary
 from model import (
     get_groups_for_user,
     get_group_as_user,
@@ -17,10 +18,14 @@ from flask_wtf.csrf import CSRFProtect
 
 load_dotenv()  # take environment variables
 
+DESIGN_TYPE = os.getenv("DESIGN_TYPE", "govuk").lower()
+
 app = Flask(__name__, template_folder="templates", static_folder="assets")
 app.secret_key = os.getenv("SECRET_KEY", os.urandom(24))
+
 app.jinja_env.globals.update(
-    design_type=os.getenv("DESIGN_TYPE", "govuk"),
+    design_type=DESIGN_TYPE,
+    design_dictionary=design_dictionary[DESIGN_TYPE],
 )
 csrf = CSRFProtect(app)
 
