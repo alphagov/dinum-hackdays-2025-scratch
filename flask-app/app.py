@@ -5,7 +5,7 @@ from flask import Flask, redirect, url_for, session, render_template
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 from auth_helpers import RequireUser, UserOptional
-from model import get_groups_for_user
+from model import get_groups_for_user, get_group_as_user
 
 load_dotenv()  # take environment variables
 
@@ -32,6 +32,7 @@ def route_root():
         user=session.get("user", {}),
         navigation=[
             {"label": "Home", "url": url_for("route_root"), "active": True},
+            {"label": "Groups", "url": url_for("route_groups")},
             {"label": "Logout", "url": url_for("route_logout")},
         ],
     )
@@ -63,13 +64,82 @@ def route_auth():
     return redirect(session.pop("redirect_url", "/"))
 
 
+@app.route("/group/<group_id>")
+@RequireUser
+def route_group_indiv(group_id: str = None):
+
+    user = session.get("user", {})
+    email = user.get("email")
+
+    group = get_group_as_user(group_id, email)
+    if not group:
+        return redirect(url_for("route_not_found"))
+
+    return render_template(
+        "group_indiv.html",
+        group=group,
+        navigation=[
+            {"label": "Home", "url": url_for("route_root")},
+            {"label": "Groups", "url": url_for("route_groups"), "active": True},
+            {"label": "Logout", "url": url_for("route_logout")},
+        ],
+    )
+
+
+@app.route("/group/<group_id>/members")
+@RequireUser
+def route_group_members(group_id: str = None):
+
+    user = session.get("user", {})
+    email = user.get("email")
+
+    group = get_group_as_user(group_id, email)
+    if not group:
+        return redirect(url_for("route_not_found"))
+
+    return render_template(
+        "group_members.html",
+        group=group,
+        navigation=[
+            {"label": "Home", "url": url_for("route_root")},
+            {"label": "Groups", "url": url_for("route_groups"), "active": True},
+            {"label": "Logout", "url": url_for("route_logout")},
+        ],
+    )
+
+
+@app.route("/not-found")
+@UserOptional
+def route_not_found():
+    user = session.get("user", {})
+    return render_template(
+        "not_found.html",
+        navigation=[
+            {"label": "Home", "url": url_for("route_root")},
+            {"label": "Groups", "url": url_for("route_groups"), "active": True},
+            {
+                "label": "Logout" if user else "Login",
+                "url": url_for("route_logout") if user else url_for("route_login"),
+            },
+        ],
+    )
+
+
 @app.route("/groups")
 @RequireUser
 def route_groups():
     user = session.get("user", {})
     email = user.get("email")
     groups = get_groups_for_user(email)
-    return render_template("groups.html", groups=groups)
+    return render_template(
+        "groups.html",
+        groups=groups,
+        navigation=[
+            {"label": "Home", "url": url_for("route_root")},
+            {"label": "Groups", "url": url_for("route_groups"), "active": True},
+            {"label": "Logout", "url": url_for("route_logout")},
+        ],
+    )
 
 
 if __name__ == "__main__":
