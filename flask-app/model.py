@@ -8,19 +8,18 @@ GRIST_SERVER = os.getenv("GRIST_SERVER")
 
 grist = GristDocAPI(GRIST_DOC_ID, server=GRIST_SERVER)
 
-def get_lists_for_user(email):
-    all_lists = grist.fetch_table("GroupMetadata")
-    user_lists = grist.fetch_table("Membership", filters={"UserEmail": email})
+def get_groups_for_user(email):
+    print("get_lists_for_user:", email)
+    all_groups = grist.fetch_table("GroupMetadata")
+    user_groups = grist.fetch_table("Membership", filters={"UserEmail": email})
 
-    def convert_list(list):
+    def convert_group(list):
         print(list)
         l = {
             "group_id": list.get("GroupID"),
             "group_name": list.get("GroupName"),
-            "is_member": list.get("GroupID") in map(lambda ul: ul.get("GroupID"), user_lists),
+            "is_member": list.get("GroupID") in map(lambda ul: ul.get("GroupID"), user_groups),
         }
         return l
 
-    lists = map(convert_list, all_lists)
-
-    return lists
+    return map(convert_group, all_groups)

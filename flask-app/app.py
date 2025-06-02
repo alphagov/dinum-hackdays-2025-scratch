@@ -5,7 +5,7 @@ from flask import Flask, redirect, url_for, session, render_template
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 from auth_helpers import RequireUser, UserOptional
-from model import get_lists_for_user
+from model import get_groups_for_user
 
 load_dotenv()  # take environment variables
 
@@ -62,15 +62,14 @@ def route_auth():
     session["user"] = userinfo
     return redirect("/")
 
-@app.route("/lists")
+@app.route("/groups")
 @RequireUser
-def route_lists():
-    user = session.get("user")
+def route_groups():
+    user = session.get("user", {}),
 
-    if user:
-        email = user.get("email")
-        lists = get_lists_for_user(email)
-        return render_template("groups.html", groups=lists)
+    email = user.get("email")
+    groups = get_groups_for_user(email)
+    return render_template("groups.html", groups=groups)
 
 
 if __name__ == "__main__":
