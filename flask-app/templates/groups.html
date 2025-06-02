@@ -16,8 +16,8 @@
     <tbody>
         {% for group in groups %}
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">{{ group.GroupName }}</td>
-                <td class="govuk-table__cell"></td>
+                <td class="govuk-table__cell">{{ group.group_name }}</td>
+                <td class="govuk-table__cell">{{ group.is_member }}</td>
             </tr>
         {% endfor %}
     </tbody>
