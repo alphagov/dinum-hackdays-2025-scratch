@@ -83,9 +83,10 @@ def route_logout():
 @app.route("/auth")
 def route_auth():
     token = oauth.internal_access.authorize_access_token()
-    userinfo = oauth.internal_access.parse_id_token(token, nonce=session.get("nonce"))
-    session["signed_in"] = True
-    session["user"] = userinfo
+    userinfo = oauth.internal_access.parse_id_token(token, nonce=session.pop("nonce"))
+    if userinfo:
+        session["signed_in"] = True
+        session["user"] = userinfo
     return redirect(session.pop("redirect_url", "/"))
 
 
