@@ -86,9 +86,9 @@ def route_group_indiv(group_id: str = None):
     )
 
 
-@app.route("/group/<group_id>/members")
+@app.route("/group/<group_id>/members.csv")
 @RequireUser
-def route_group_members(group_id: str = None):
+def route_group_members_csv(group_id: str = None):
 
     user = session.get("user", {})
     email = user.get("email")
@@ -97,15 +97,19 @@ def route_group_members(group_id: str = None):
     if not group:
         return redirect(url_for("route_not_found"))
 
-    return render_template(
-        "group_members.html",
-        group=group,
-        navigation=[
-            {"label": "Home", "url": url_for("route_root")},
-            {"label": "Groups", "url": url_for("route_groups"), "active": True},
-            {"label": "Logout", "url": url_for("route_logout")},
-        ],
+    csv = "email_address,member_type\n"
+    for member in group.get("members", []):
+        csv += f"{member.UserEmail},{member.MemberType}\n"
+
+    response = app.response_class(
+        response=csv,
+        status=200,
+        mimetype="text/csv",
+        headers={
+            "Content-Disposition": f'attachment; filename="{group["group_name"]}.csv"'
+        },
     )
+    return response
 
 
 @app.route("/not-found")
@@ -141,31 +145,34 @@ def route_groups():
         ],
     )
 
+
 @app.route("/join/<group_id>", methods=["POST"])
 @RequireUser
 def route_join_group(group_id):
     user = session.get("user", {})
     email = user.get("email")
-    
+
     success = join_group(email, group_id)
-    
+
     if success:
         return redirect(url_for("route_groups"))
     else:
         return "Failed to join group", 400
-    
+
+
 @app.route("/leave/<group_id>", methods=["POST"])
 @RequireUser
 def route_leave_group(group_id):
     user = session.get("user", {})
     email = user.get("email")
-    
+
     success = leave_group(email, group_id)
-    
+
     if success:
         return redirect(url_for("route_groups"))
     else:
         return "Failed to leave group", 400
+
 
 if __name__ == "__main__":
     app.run(host="localhost", port=int(os.getenv("PORT", 5015)), debug=True)
