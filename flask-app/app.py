@@ -5,11 +5,7 @@ from flask import Flask, redirect, url_for, session, render_template
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 from auth_helpers import RequireUser, UserOptional
-<<<<<<< HEAD
-from model import get_groups_for_user, get_group_as_user
-=======
-from model import get_groups_for_user, join_group, leave_group
->>>>>>> af8db0e (add join/leave group buttons)
+from model import get_groups_for_user, get_group_as_user, join_group, leave_group
 
 load_dotenv()  # take environment variables
 
