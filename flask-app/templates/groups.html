@@ -1,4 +1,4 @@
-{% extends '_primary.html' %}
+{% extends '_govuk.html' %}
 
 {% block content %}
 <h1 class="govuk-heading-xl">Groups</h1>
@@ -16,34 +16,34 @@
     </thead>
     <tbody>
         {% for group in groups %}
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell">{{ group.group_name }}</td>
-                <td class="govuk-table__cell" id="group-{{ group.group_id }}"">
+        <tr class="govuk-table__row">
+            <td class="govuk-table__cell">{{ group.group_name }}</td>
+            <td class="govuk-table__cell" id="group-{{ group.group_id }}"">
                     {% if group.is_member %}
-                        <form action="{{ url_for('route_leave_group', group_id=group.group_id) }}" method="post">
-                            <button 
-                                type="submit" 
-                                hx-post="{{ url_for('route_leave_group', group_id=group.group_id) }}"
-                                hx-target="#group-{{ group.group_id }}"
-                                hx-select="#group-{{ group.group_id }}"
-                                hx-swap="outerHTML"
-                                hx-disabled-elt="this"
-                                class="govuk-button govuk-button--warning">Leave Group</button>
-                        </form>
-                    {% else %}
-                        <form action="{{ url_for('route_join_group', group_id=group.group_id) }}" method="post">
-                            <button 
-                                type="submit" 
-                                hx-post="{{ url_for('route_join_group', group_id=group.group_id) }}"
-                                hx-target="#group-{{ group.group_id }}"
-                                hx-select="#group-{{ group.group_id }}"
-                                hx-swap="outerHTML"
-                                hx-disabled-elt="this"
-                                class="govuk-button ">Join Group</button>
-                        </form>
-                    {% endif %}
-                </td>
-            </tr>
+                        <form action=" {{ url_for('route_leave_group', group_id=group.group_id) }}" method="post">
+                <button
+                        type="submit"
+                        hx-post="{{ url_for('route_leave_group', group_id=group.group_id) }}"
+                        hx-target="#group-{{ group.group_id }}"
+                        hx-select="#group-{{ group.group_id }}"
+                        hx-swap="outerHTML"
+                        hx-disabled-elt="this"
+                        class="govuk-button govuk-button--warning">Leave Group</button>
+                </form>
+                {% else %}
+                <form action="{{ url_for('route_join_group', group_id=group.group_id) }}" method="post">
+                    <button
+                            type="submit"
+                            hx-post="{{ url_for('route_join_group', group_id=group.group_id) }}"
+                            hx-target="#group-{{ group.group_id }}"
+                            hx-select="#group-{{ group.group_id }}"
+                            hx-swap="outerHTML"
+                            hx-disabled-elt="this"
+                            class="govuk-button ">Join Group</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
         {% endfor %}
     </tbody>
 </table>

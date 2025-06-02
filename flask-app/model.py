@@ -48,9 +48,15 @@ def get_group_as_user(group_id, email):
     def is_admin():
         return len(list(filter(lambda ul: ul.MemberType == "Owner", user_groups))) > 0
 
+    if not (is_member() or is_admin()):
+        return None
+
+    members = grist.fetch_table("Membership", filters={"GroupID": group_id})
+
     return {
         "group_id": group[0].ID2,
         "group_name": group[0].GroupName,
+        "members": members,
         "is_member": is_member(),
         "is_admin": is_admin(),
     }
@@ -58,21 +64,25 @@ def get_group_as_user(group_id, email):
 
 def join_group(user_email, group_id):
     # Check if the user is already a member of the group
-    is_member = grist.fetch_table("Membership", filters={"UserEmail": user_email, "GroupID": group_id})
+    is_member = grist.fetch_table(
+        "Membership", filters={"UserEmail": user_email, "GroupID": group_id}
+    )
     if len(is_member) > 0:
         return True
 
-    grist.add_records("Membership", [{
-        "UserEmail": user_email,
-        "GroupID": group_id,
-        "MemberType": "Member"
-    }])
+    grist.add_records(
+        "Membership",
+        [{"UserEmail": user_email, "GroupID": group_id, "MemberType": "Member"}],
+    )
 
     return True
 
+
 def leave_group(user_email, group_id):
     # Check if the user is a member of the group
-    is_member = grist.fetch_table("Membership", filters={"UserEmail": user_email, "GroupID": group_id})
+    is_member = grist.fetch_table(
+        "Membership", filters={"UserEmail": user_email, "GroupID": group_id}
+    )
     if len(is_member) == 0:
         return True
 
