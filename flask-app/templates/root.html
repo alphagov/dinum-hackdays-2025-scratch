@@ -1,8 +1,6 @@
 {% extends '_govuk.html' %}
 
 {% block content %}
-<h1 class="govuk-heading-xl">Groups</h1>
-<p class="govuk-body">Welcome {{ user["name"] }}</p>
 <div class="govuk-phase-banner">
   <p class="govuk-phase-banner__content">
     <strong class="govuk-tag govuk-phase-banner__content__tag">
@@ -12,26 +10,26 @@
       This is a new service. Help us improve it and <a class="govuk-link" href="#">give your feedback by email</a>.
     </span>
   </p>
-  </div>
+</div>
 
 <main>
-    <h1>Welcome to Gov.UK Groups</h1>
-    <p>The UK Government's service for joining and managing mailing lists and groups.
-    What can you do with Groups? 
-    <ul>
-        <li>create new mail list groups</li>
-        <li>control who can access your group</li> 
-        <li>add and remove users</li>
-        <li>share your lists with users</li>
+  <h1>Welcome to GOV.UK Groups</h1>
+  <p>The UK Government's service for joining and managing mailing lists and groups.
+    What can you do with Groups?
+  <ul>
+    <li>create new mail list groups</li>
+    <li>control who can access your group</li>
+    <li>add and remove users</li>
+    <li>share your lists with users</li>
 
-    </ul>
-    </p> 
+  </ul>
+  </p>
 
-<a href="#" role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button">
-  Start now
-  <svg class="govuk-button__start-icon" xmlns="LINK NEEDED" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
-    <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z" />
-  </svg>
-</a>
+  <a href="/login" role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button">
+    Start now
+    <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
+      <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z" />
+    </svg>
+  </a>
 </main>
 {% endblock %}
