@@ -6,11 +6,13 @@ from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 from auth_helpers import RequireUser, UserOptional
 from model import get_groups_for_user, get_group_as_user, join_group, leave_group
+from flask_wtf.csrf import CSRFProtect
 
 load_dotenv()  # take environment variables
 
 app = Flask(__name__, template_folder="templates", static_folder="assets")
 app.secret_key = os.getenv("SECRET_KEY", os.urandom(24))
+csrf = CSRFProtect(app)
 
 CLIENT_ID = os.getenv("CLIENT_ID")
 
@@ -78,6 +80,23 @@ def route_group_indiv(group_id: str = None):
     return render_template(
         "group_indiv.html",
         group=group,
+        navigation=[
+            {"label": "Home", "url": url_for("route_root")},
+            {"label": "Groups", "url": url_for("route_groups"), "active": True},
+            {"label": "Logout", "url": url_for("route_logout")},
+        ],
+    )
+
+
+@app.route("/new-group", methods=["GET", "POST"])
+@RequireUser
+def route_new_group():
+
+    user = session.get("user", {})
+    email = user.get("email")
+
+    return render_template(
+        "group_new.html",
         navigation=[
             {"label": "Home", "url": url_for("route_root")},
             {"label": "Groups", "url": url_for("route_groups"), "active": True},

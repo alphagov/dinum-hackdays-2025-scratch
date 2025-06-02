@@ -1,0 +1,42 @@
+{% extends '_govuk.html' %}
+
+{% block content %}
+
+<h1 class="govuk-heading-l">New Group</h1>
+<form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <div class="govuk-form-group">
+        <h2 class="govuk-label-wrapper">
+            <label class="govuk-label govuk-label--m" for="groupName">
+                What is the name of your group?
+            </label>
+        </h2>
+        <input class="govuk-input" id="groupName" name="groupName" type="text">
+    </div>
+
+    <div class="govuk-form-group">
+        <h2 class="govuk-label-wrapper">
+            <label class="govuk-label govuk-label--m" for="groupDesc">
+                How would you describe your group to your users?
+            </label>
+        </h2>
+        <textarea class="govuk-textarea" id="groupDesc" name="groupDesc" rows="5"></textarea>
+    </div>
+
+    <div class="govuk-form-group">
+        <label class="govuk-label govuk-label--m" for="groupPermissions">
+            Select the appropriate permission for your group
+        </label>
+        <select class="govuk-select" id="groupPermissions" name="groupPermissions">
+            <option value="any">Any - visible to any person</option>
+            <option value="authorised">Authorised - visible to specified domains</option>
+            <option value="private">Private - closed group that requires owners and managers to add people</option>
+        </select>
+    </div>
+
+    <button type="submit" class="govuk-button" data-module="govuk-button">
+        Continue
+    </button>
+</form>
+
+{% endblock %}
