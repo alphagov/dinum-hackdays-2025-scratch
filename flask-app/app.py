@@ -4,6 +4,7 @@ import os
 from flask import Flask, redirect, url_for, session, render_template
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
+from auth_helpers import RequireUser, UserOptional
 
 load_dotenv()  # take environment variables
 
@@ -23,18 +24,16 @@ oauth.register(
 
 
 @app.route("/")
+@RequireUser
 def route_root():
-    user = session.get("user")
-    if user:
-        return render_template(
-            "root.html",
-            user=user,
-            navigation=[
-                {"label": "Home", "url": url_for("route_root"), "active": True},
-                {"label": "Logout", "url": url_for("route_logout")},
-            ],
-        )
-    return redirect(url_for("route_login"))
+    return render_template(
+        "root.html",
+        user=session.get("user", {}),
+        navigation=[
+            {"label": "Home", "url": url_for("route_root"), "active": True},
+            {"label": "Logout", "url": url_for("route_logout")},
+        ],
+    )
 
 
 @app.route("/login")
@@ -58,6 +57,7 @@ def route_logout():
 def route_auth():
     token = oauth.internal_access.authorize_access_token()
     userinfo = oauth.internal_access.parse_id_token(token, nonce=session.get("nonce"))
+    session["signed_in"] = True
     session["user"] = userinfo
     return redirect("/")
 
