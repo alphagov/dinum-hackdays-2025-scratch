@@ -1,5 +1,27 @@
+import os
+
 from flask import session, redirect, url_for, request
 from functools import wraps
+
+DOMAINS_ALLOWED_CREATE_GROUP = [
+    domain.strip().lower()
+    for domain in os.getenv(
+        "DOMAINS_ALLOWED_CREATE_GROUP",
+        "gov.uk,nhs.net",
+    ).split(",")
+    if domain.strip()
+]
+
+
+def can_create_group(email=None):
+    can = False
+    if email:
+        domain = email.split("@")[-1].lower()
+        for allowed_domain in DOMAINS_ALLOWED_CREATE_GROUP:
+            if domain == allowed_domain or domain.endswith("." + allowed_domain):
+                can = True
+                break
+    return can
 
 
 def RequireUser(f):

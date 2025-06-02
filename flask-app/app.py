@@ -4,7 +4,7 @@ import os
 from flask import Flask, redirect, url_for, session, render_template, request
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
-from auth_helpers import RequireUser, UserOptional
+from auth_helpers import RequireUser, UserOptional, can_create_group
 from design_helpers import design_dictionary
 from model import (
     get_groups_for_user,
@@ -29,12 +29,16 @@ app.jinja_env.globals.update(
 )
 csrf = CSRFProtect(app)
 
+OPENID_CONFIG_URL = os.getenv(
+    "OPENID_CONFIG_URL",
+    "https://sso.service.security.gov.uk/.well-known/openid-configuration",
+)
 CLIENT_ID = os.getenv("CLIENT_ID")
 
 oauth = OAuth(app)
 oauth.register(
     name="internal_access",
-    server_metadata_url="https://sso.service.security.gov.uk/.well-known/openid-configuration",
+    server_metadata_url=OPENID_CONFIG_URL,
     client_id=CLIENT_ID,
     client_secret=os.getenv("CLIENT_SECRET"),
     client_kwargs={"scope": "openid profile email"},
@@ -127,11 +131,10 @@ def route_delete_group():
 @app.route("/new-group", methods=["GET", "POST"])
 @RequireUser
 def route_new_group():
-
     user = session.get("user", {})
     email = user.get("email")
 
-    if not email.endswith("@digital.cabinet-office.gov.uk"):
+    if not can_create_group(email):
         return redirect("/")
 
     is_post = request.method == "POST"
@@ -239,9 +242,11 @@ def route_groups():
     user = session.get("user", {})
     email = user.get("email")
     groups = get_groups_for_user(email)
+
     return render_template(
         "groups.html",
         groups=groups,
+        can_create_group=can_create_group(email),
         navigation=[
             {"label": "Home", "url": url_for("route_root")},
             {"label": "Groups", "url": url_for("route_groups"), "active": True},
