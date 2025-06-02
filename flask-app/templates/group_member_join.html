@@ -1,0 +1,33 @@
+{% extends '_govuk.html' %}
+
+{% block content %}
+<div class="govuk-main-wrapper">
+    <div class="govuk-grid-row">
+        <h1 class="govuk-heading-xl">{{ group.group_name }}</h1>
+    </div>
+
+    <div class="govuk-grid-row">
+        {% if not group.is_member %}
+        <form action="{{ url_for('route_join_group', group_id=group.group_id) }}" method="post">
+            <input type="hidden" name="from_page" value="group_member_join">
+            <button
+                type="submit"
+                class="govuk-button govuk-button--primary"
+                id="join-button">
+                Join Group
+            </button>
+        </form>
+        {% else %}
+        <form action="{{ url_for('route_leave_group', group_id=group.group_id) }}" method="post">
+            <input type="hidden" name="from_page" value="group_member_join">
+            <button
+                type="submit"
+                class="govuk-button govuk-button--warning"
+                id="join-button">
+                Leave Group
+            </button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

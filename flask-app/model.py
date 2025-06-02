@@ -10,7 +10,6 @@ GRIST_SERVER = os.getenv("GRIST_SERVER")
 
 grist = GristDocAPI(GRIST_DOC_ID, server=GRIST_SERVER)
 
-
 def create_group(group, user_email):
     # create a new group in the GroupMetadata table
     group_id = str(uuid.uuid4())
@@ -98,9 +97,6 @@ def get_group_as_user(group_id, email):
 
     def is_admin():
         return len(list(filter(lambda ul: ul.MemberType == "Owner", user_groups))) > 0
-
-    if not (is_member() or is_admin()):
-        return None
 
     members = grist.fetch_table("Membership", filters={"GroupID": group_id})
 

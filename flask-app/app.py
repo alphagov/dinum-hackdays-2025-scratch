@@ -161,8 +161,7 @@ def route_group_members_join(group_id: str = None):
     user = session.get("user", {})
     email = user.get("email")
 
-    # group = get_group(group_id, email)
-    group = {}
+    group = get_group_as_user(group_id, email)
 
     return render_template(
         "group_member_join.html",
@@ -251,10 +250,13 @@ def route_groups():
 def route_join_group(group_id):
     user = session.get("user", {})
     email = user.get("email")
+    from_page = request.form.get("from_page")
 
     success = join_group(email, group_id)
 
     if success:
+        if from_page == "group_member_join":
+            return redirect(url_for("route_group_members_join", group_id=group_id))
         return redirect(url_for("route_groups"))
     else:
         return "Failed to join group", 400
@@ -265,10 +267,13 @@ def route_join_group(group_id):
 def route_leave_group(group_id):
     user = session.get("user", {})
     email = user.get("email")
+    from_page = request.form.get("from_page")
 
     success = leave_group(email, group_id)
 
     if success:
+        if from_page == "group_member_join":
+            return redirect(url_for("route_group_members_join", group_id=group_id))
         return redirect(url_for("route_groups"))
     else:
         return "Failed to leave group", 400
