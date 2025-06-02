@@ -1,7 +1,14 @@
-{% extends '_govuk.html' %}
+{% extends '_' + design_type + '.html' %}
 
 {% block content %}
 <h1 class="govuk-heading-xl">Groups</h1>
+
+{% if can_create_group %}
+<a href="{{ url_for('route_new_group') }}" class="govuk-button govuk-button--secondary">
+    Create new group
+</a>
+{% endif %}
+
 <table class="govuk-table">
     <thead class="govuk-table__head">
         <tr class="govuk-table__row">
@@ -17,10 +24,14 @@
     <tbody>
         {% for group in groups %}
         <tr class="govuk-table__row">
-            <td class="govuk-table__cell"><a href="/group/{{ group.group_id }}" class="govuk-link govuk-link--no-visited-state govuk-link--no-underline">{{ group.group_name }}</a></td>
+            <td class="govuk-table__cell">
+                <a href="/group/{{ group.group_id }}" class="govuk-link govuk-link--no-visited-state govuk-link--no-underline">{{ group.group_name }}</a>
+                <p class="govuk-body-s">{{ group.description }}</p>
+            </td>
             <td class="govuk-table__cell" id="group-{{ group.group_id }}">
                 {% if group.is_member %}
                 <form action=" {{ url_for('route_leave_group', group_id=group.group_id) }}" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <button
                             type="submit"
                             hx-post="{{ url_for('route_leave_group', group_id=group.group_id) }}"
@@ -32,6 +43,7 @@
                 </form>
                 {% else %}
                 <form action="{{ url_for('route_join_group', group_id=group.group_id) }}" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <button
                             type="submit"
                             hx-post="{{ url_for('route_join_group', group_id=group.group_id) }}"

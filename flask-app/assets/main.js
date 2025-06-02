@@ -23,3 +23,10 @@ if (ulFragmentLinks.length > 0) {
     });
     changeContentPaneByFragment("members");
 }
+
+function disable_button(button) {
+    button.disabled = true;
+    button.classList.add("disabled");
+    // continue to submit the form
+    button.form.submit();
+}

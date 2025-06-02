@@ -1,5 +1,6 @@
 from grist_api import GristDocAPI
 import os
+import uuid
 from dotenv import load_dotenv
 
 load_dotenv()  # take environment variables
@@ -8,6 +9,55 @@ GRIST_DOC_ID = os.getenv("GRIST_DOCUMENT_ID")
 GRIST_SERVER = os.getenv("GRIST_SERVER")
 
 grist = GristDocAPI(GRIST_DOC_ID, server=GRIST_SERVER)
+
+def create_group(group, user_email):
+    # create a new group in the GroupMetadata table
+    group_id = str(uuid.uuid4())
+
+    group_visibility = group.get("group_visibility", "Private").title()
+    if group_visibility not in ["Private", "Authorised", "Any"]:
+        return None
+
+    grist.add_records(
+        "GroupMetadata",
+        [
+            {
+                "GroupName": group["group_name"],
+                "GroupDesc": group.get("group_desc", ""),
+                "GroupVisibility": group_visibility,
+                "ID2": group_id,
+            }
+        ],
+    )
+    # add the user as an owner of the group in the Membership table
+    grist.add_records(
+        "Membership",
+        [
+            {
+                "UserEmail": user_email,
+                "GroupID": group_id,
+                "MemberType": "Owner",
+            }
+        ],
+    )
+
+    return group_id
+
+
+def delete_group(group_id, user_email):
+    group = get_group_as_user(group_id, user_email)
+    if not group or not group["is_admin"]:
+        return False
+
+    # delete the group from the GroupMetadata table
+    grist.delete_records("GroupMetadata", [group.get("_id")])
+
+    members = grist.fetch_table("Membership", filters={"GroupID": group_id})
+    # delete all members from the Membership table
+    if members:
+        grist.delete_records("Membership", [m.id for m in members])
+
+    return True
 
 
 def get_groups_for_user(email):
@@ -22,11 +72,13 @@ def get_groups_for_user(email):
         return group.ID2 in map(lambda ul: ul.GroupID, groups_user_owns)
 
     def convert_group(group):
+        print(group)
         l = {
             "group_id": group.ID2,
             "group_name": group.GroupName,
             "is_member": is_member(group),
             "is_admin": is_admin(group),
+            "description": group.GroupDesc
         }
         return l
 
@@ -48,17 +100,16 @@ def get_group_as_user(group_id, email):
     def is_admin():
         return len(list(filter(lambda ul: ul.MemberType == "Owner", user_groups))) > 0
 
-    if not (is_member() or is_admin()):
-        return None
-
     members = grist.fetch_table("Membership", filters={"GroupID": group_id})
 
     return {
+        "_id": group[0].id,
         "group_id": group[0].ID2,
         "group_name": group[0].GroupName,
         "members": members,
         "is_member": is_member(),
         "is_admin": is_admin(),
+        "description": group[0].GroupDesc
     }
 
 

@@ -1,0 +1,73 @@
+name: 'Deploy GovGroups lambda'
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+env:
+  # Setting an environment variable with the value of a configuration variable
+  AWS_REGION: "eu-west-2"
+
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read    # This is required for actions/checkout
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    environment:
+      name: sandbox
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: "1.5.7"
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    
+    - name: Build ZIP file
+      run: |
+        ls -lah
+        bash build/build.sh
+    
+    - name: configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: "arn:aws:iam::283416304068:role/GitHubDeployment"
+        role-session-name: ${{ github.run_id }}-${{ github.event_name }}-${{ github.job }}
+        aws-region: "eu-west-2"
+    
+    - name: Test AWS access
+      run: |
+        aws sts get-caller-identity
+        ls -lah
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run: terraform init
+      working-directory: infrastructure/
+
+    # Checks that all Terraform configuration files adhere to a canonical format
+    - name: Terraform Format
+      run: terraform fmt -check
+      working-directory: infrastructure/
+
+    # Generates an execution plan for Terraform
+    - name: Terraform Apply
+      run: |
+        terraform apply -auto-approve \
+          -input=false \
+          -var="CLIENT_ID=${{ secrets.CLIENT_ID }}" \
+          -var="CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}" \
+          -var="GRIST_API_KEY=${{ secrets.GRIST_API_KEY }}" \
+          -var="GRIST_SERVER=${{ secrets.GRIST_SERVER }}" \
+          -var="GRIST_DOCUMENT_ID=${{ secrets.GRIST_DOCUMENT_ID }}" \
+      working-directory: infrastructure/
