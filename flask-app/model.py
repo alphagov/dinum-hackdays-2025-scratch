@@ -72,11 +72,13 @@ def get_groups_for_user(email):
         return group.ID2 in map(lambda ul: ul.GroupID, groups_user_owns)
 
     def convert_group(group):
+        print(group)
         l = {
             "group_id": group.ID2,
             "group_name": group.GroupName,
             "is_member": is_member(group),
             "is_admin": is_admin(group),
+            "description": group.GroupDesc
         }
         return l
 
@@ -107,6 +109,7 @@ def get_group_as_user(group_id, email):
         "members": members,
         "is_member": is_member(),
         "is_admin": is_admin(),
+        "description": group[0].GroupDesc
     }
 
 

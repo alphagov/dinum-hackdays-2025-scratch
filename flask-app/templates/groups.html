@@ -24,7 +24,10 @@
     <tbody>
         {% for group in groups %}
         <tr class="govuk-table__row">
-            <td class="govuk-table__cell"><a href="/group/{{ group.group_id }}" class="govuk-link govuk-link--no-visited-state govuk-link--no-underline">{{ group.group_name }}</a></td>
+            <td class="govuk-table__cell">
+                <a href="/group/{{ group.group_id }}" class="govuk-link govuk-link--no-visited-state govuk-link--no-underline">{{ group.group_name }}</a>
+                <p class="govuk-body-s">{{ group.description }}</p>
+            </td>
             <td class="govuk-table__cell" id="group-{{ group.group_id }}">
                 {% if group.is_member %}
                 <form action=" {{ url_for('route_leave_group', group_id=group.group_id) }}" method="post">
