@@ -6,7 +6,6 @@ def RequireUser(f):
     @wraps(f)
     def wrap(*args, **kwds):
         try:
-            print(session)
             signed_in = session.get("signed_in", False)
             if signed_in:
                 return f(*args, **kwds)

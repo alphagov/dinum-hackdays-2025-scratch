@@ -66,8 +66,7 @@ def route_auth():
 @RequireUser
 def route_groups():
     user = session.get("user", {}),
-
-    email = user.get("email")
+    email = user[0].get("email")
     groups = get_groups_for_user(email)
     return render_template("groups.html", groups=groups)
 
