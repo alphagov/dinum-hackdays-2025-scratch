@@ -60,13 +60,14 @@ def route_auth():
     userinfo = oauth.internal_access.parse_id_token(token, nonce=session.get("nonce"))
     session["signed_in"] = True
     session["user"] = userinfo
-    return redirect("/")
+    return redirect(session.pop("redirect_url", "/"))
+
 
 @app.route("/groups")
 @RequireUser
 def route_groups():
-    user = session.get("user", {}),
-    email = user[0].get("email")
+    user = session.get("user", {})
+    email = user.get("email")
     groups = get_groups_for_user(email)
     return render_template("groups.html", groups=groups)
 

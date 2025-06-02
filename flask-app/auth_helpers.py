@@ -1,18 +1,24 @@
-from flask import session, redirect, url_for
+from flask import session, redirect, url_for, request
 from functools import wraps
 
 
 def RequireUser(f):
     @wraps(f)
     def wrap(*args, **kwds):
+        signed_in = False
+        user = {}
         try:
             signed_in = session.get("signed_in", False)
-            if signed_in:
-                return f(*args, **kwds)
-            else:
-                session.clear()
+            user = session.get("user", {})
         except Exception as e:
             print("auth_helpers: RequireUser:", e)
+
+        if signed_in and user:
+            return f(*args, **kwds)
+        else:
+            session.clear()
+
+        session["redirect_url"] = request.url
         return redirect(url_for("route_login"))
 
     return wrap
