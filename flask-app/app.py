@@ -3,6 +3,9 @@
 import os
 from flask import Flask, redirect, url_for, session, render_template
 from authlib.integrations.flask_client import OAuth
+from dotenv import load_dotenv
+
+load_dotenv()  # take environment variables
 
 app = Flask(__name__, template_folder="templates", static_folder="assets")
 app.secret_key = os.getenv("SECRET_KEY", os.urandom(24))

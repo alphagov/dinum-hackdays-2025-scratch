@@ -1,6 +1,8 @@
 run.ps1
 run.sh
 
+.env
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
