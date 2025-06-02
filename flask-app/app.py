@@ -70,7 +70,8 @@ def route_auth():
 @app.route("/lists")
 def route_lists():
     lists = grist.fetch_table("GroupMetadata")
-    return lists
+    print(lists)
+    return render_template("groups.html", groups=lists)
 
 if __name__ == "__main__":
     app.run(host="localhost", port=int(os.getenv("PORT", 5015)), debug=True)
