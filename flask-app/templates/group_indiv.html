@@ -64,6 +64,13 @@
                 Settings
             </h2>
             <p class="govuk-body">{{ group.group_desc }}</p>
+            <form method="post" action="/delete-group">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <input type="hidden" name="group_id" value="{{ group.group_id }}" />
+                <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button" onclick="disable_button(this);">
+                    Delete Group
+                </button>
+            </form>
         </main>
     </div>
 </div>
