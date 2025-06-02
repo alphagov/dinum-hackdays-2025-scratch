@@ -13,7 +13,6 @@ grist = GristDocAPI(GRIST_DOC_ID, server=GRIST_SERVER)
 def get_groups_for_user(email):
     all_groups = grist.fetch_table("GroupMetadata")
     user_groups = grist.fetch_table("Membership", filters={"UserEmail": email})
-
     groups_user_owns = filter(lambda ul: ul.MemberType == "Owner", user_groups)
 
     def is_member(group):
@@ -55,3 +54,28 @@ def get_group_as_user(group_id, email):
         "is_member": is_member(),
         "is_admin": is_admin(),
     }
+
+
+def join_group(user_email, group_id):
+    # Check if the user is already a member of the group
+    is_member = grist.fetch_table("Membership", filters={"UserEmail": user_email, "GroupID": group_id})
+    if len(is_member) > 0:
+        return True
+
+    grist.add_records("Membership", [{
+        "UserEmail": user_email,
+        "GroupID": group_id,
+        "MemberType": "Member"
+    }])
+
+    return True
+
+def leave_group(user_email, group_id):
+    # Check if the user is a member of the group
+    is_member = grist.fetch_table("Membership", filters={"UserEmail": user_email, "GroupID": group_id})
+    if len(is_member) == 0:
+        return True
+
+    grist.delete_records("Membership", [is_member[0].id])
+
+    return True

@@ -5,7 +5,11 @@ from flask import Flask, redirect, url_for, session, render_template
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 from auth_helpers import RequireUser, UserOptional
+<<<<<<< HEAD
 from model import get_groups_for_user, get_group_as_user
+=======
+from model import get_groups_for_user, join_group, leave_group
+>>>>>>> af8db0e (add join/leave group buttons)
 
 load_dotenv()  # take environment variables
 
@@ -141,6 +145,31 @@ def route_groups():
         ],
     )
 
+@app.route("/join/<group_id>", methods=["POST"])
+@RequireUser
+def route_join_group(group_id):
+    user = session.get("user", {})
+    email = user.get("email")
+    
+    success = join_group(email, group_id)
+    
+    if success:
+        return redirect(url_for("route_groups"))
+    else:
+        return "Failed to join group", 400
+    
+@app.route("/leave/<group_id>", methods=["POST"])
+@RequireUser
+def route_leave_group(group_id):
+    user = session.get("user", {})
+    email = user.get("email")
+    
+    success = leave_group(email, group_id)
+    
+    if success:
+        return redirect(url_for("route_groups"))
+    else:
+        return "Failed to leave group", 400
 
 if __name__ == "__main__":
     app.run(host="localhost", port=int(os.getenv("PORT", 5015)), debug=True)

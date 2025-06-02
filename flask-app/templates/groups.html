@@ -9,10 +9,7 @@
                 Group Name
             </th>
             <th scope="col" class="govuk-table__header">
-                Member?
-            </th>
-            <th scope="col" class="govuk-table__header">
-                Owner?
+                Member
             </th>
         </tr>
         </tr>
@@ -21,8 +18,17 @@
         {% for group in groups %}
             <tr class="govuk-table__row">
                 <td class="govuk-table__cell">{{ group.group_name }}</td>
-                <td class="govuk-table__cell">{{ group.is_member }}</td>
-                <td class="govuk-table__cell">{{ group.is_admin }}</td>
+                <td class="govuk-table__cell">
+                    {% if group.is_member %}
+                        <form action="{{ url_for('route_leave_group', group_id=group.group_id) }}" method="post">
+                            <button type="submit" class="govuk-button govuk-button--secondary">Leave Group</button>
+                        </form>
+                    {% else %}
+                        <form action="{{ url_for('route_join_group', group_id=group.group_id) }}" method="post">
+                            <button type="submit" class="govuk-button govuk-button--secondary">Join Group</button>
+                        </form>
+                    {% endif %}
+                </td>
             </tr>
         {% endfor %}
     </tbody>
