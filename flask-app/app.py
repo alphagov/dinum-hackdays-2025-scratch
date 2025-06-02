@@ -86,6 +86,37 @@ def route_group_indiv(group_id: str = None):
     )
 
 
+@app.route("/group/<group_id>/join")
+@RequireUser
+def route_group_members_join(group_id: str = None):
+    user = session.get("user", {})
+    email = user.get("email")
+
+    # group = get_group(group_id, email)
+    group = {}
+
+    return render_template(
+        "group_member_join.html",
+        group=group,
+    )
+
+
+@app.route("/group/<group_id>/leave")
+@RequireUser
+def route_group_members_leave(group_id: str = None):
+    user = session.get("user", {})
+    email = user.get("email")
+
+    group = get_group_as_user(group_id, email)
+    if not group:
+        return redirect(url_for("route_not_found"))
+
+    return render_template(
+        "group_member_leave.html",
+        group=group,
+    )
+
+
 @app.route("/group/<group_id>/members.csv")
 @RequireUser
 def route_group_members_csv(group_id: str = None):
