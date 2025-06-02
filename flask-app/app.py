@@ -34,15 +34,19 @@ oauth.register(
 
 
 @app.route("/")
-@RequireUser
+@UserOptional
 def route_root():
+    user = session.get("user", {})
     return render_template(
         "root.html",
-        user=session.get("user", {}),
+        user=user,
         navigation=[
             {"label": "Home", "url": url_for("route_root"), "active": True},
             {"label": "Groups", "url": url_for("route_groups")},
-            {"label": "Logout", "url": url_for("route_logout")},
+            {
+                "label": "Logout" if user else "Login",
+                "url": url_for("route_logout") if user else url_for("route_login"),
+            },
         ],
     )
 
