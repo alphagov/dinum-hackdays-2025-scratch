@@ -1,6 +1,7 @@
 # Final submission for Baller
 ## Final Project Description
 (Summarise your project as it stands at the end)
+A tool to set up and manage mailing lists for public sector users, and for the recipients to also control what they receive from government.
 ## Team members
 * **Team Lead**: April Farrant (@ApriFarrants)
 * **Members**:
@@ -18,5 +19,6 @@ https://github.com/alphagov/dinum-hackdays-2025-scratch/tree/main
 (What was difficult? What did you solve?)
 ## Impact
 (Who will benefit from your project?)
+Primarily managers of mailing lists, having an easy way to manage these lists that is not reliant on external companies such as Google or Mailchimp. The recipients of these messages will also be able to have an easier method of controlling what public sector mailing lists they are part of. Government will also have a standardised platform to create and manage mailing lists as well.
 ## Next Steps
 (If you were to continue, what next steps or developments would you envision?)
