@@ -19,6 +19,9 @@ load_dotenv()  # take environment variables
 
 app = Flask(__name__, template_folder="templates", static_folder="assets")
 app.secret_key = os.getenv("SECRET_KEY", os.urandom(24))
+app.jinja_env.globals.update(
+    design_type=os.getenv("DESIGN_TYPE", "govuk"),
+)
 csrf = CSRFProtect(app)
 
 CLIENT_ID = os.getenv("CLIENT_ID")
