@@ -56,6 +56,11 @@
          data-module="govuk-service-navigation">
         <div class="govuk-width-container">
             <div class="govuk-service-navigation__container">
+                <span class="govuk-service-navigation__service-name">
+                    <a href="#" class="govuk-service-navigation__link">
+                        GOV.UK Groups
+                    </a>
+                </span>
                 <nav aria-label="Menu" class="govuk-service-navigation__wrapper">
                     <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" hidden>
                         Menu
@@ -77,6 +82,16 @@
     </div>
     {% endif %}
     <div class="govuk-width-container">
+        <div class="govuk-phase-banner">
+            <p class="govuk-phase-banner__content">
+                <strong class="govuk-tag govuk-phase-banner__content__tag">
+                    Alpha
+                </strong>
+                <span class="govuk-phase-banner__text">
+                    This is a new service. Help us improve it and <a class="govuk-link" href="#">give your feedback by email</a>.
+                </span>
+            </p>
+        </div>
         <main class="govuk-main-wrapper" id="main-content">
             {% block content %}
             {% endblock %}

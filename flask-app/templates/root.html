@@ -1,22 +1,12 @@
 {% extends '_' + design_type + '.html' %}
 
 {% block content %}
-<div class="govuk-phase-banner">
-  <p class="govuk-phase-banner__content">
-    <strong class="govuk-tag govuk-phase-banner__content__tag">
-      Alpha
-    </strong>
-    <span class="govuk-phase-banner__text">
-      This is a new service. Help us improve it and <a class="govuk-link" href="#">give your feedback by email</a>.
-    </span>
-  </p>
-</div>
 
 <main>
   <h1 class="{{ design_dictionary.h1 }}">Welcome to GOV.UK Groups</h1>
   <p class="govuk-body">The UK Government's service for joining and managing mailing lists and groups.
     What can you do with Groups?
-  <ul>
+  <ul class="govuk-list govuk-list--bullet">
     <li>create new mail list groups</li>
     <li>control who can access your group</li>
     <li>add and remove users</li>
