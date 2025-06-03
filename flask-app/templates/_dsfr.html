@@ -47,10 +47,9 @@
     <div class="fr-header__menu-links"></div>
     <nav class="fr-nav" id="navigation-494" role="navigation" aria-label="Menu principal">
      <ul class="fr-nav__list">
-      <li class="fr-nav__item"><a class="fr-nav__link" href="/" target="_self">Home</a></li>
-      <li class="fr-nav__item"><a class="fr-nav__link" href="/groups" target="_self">Groups</a></li>
-      <li class="fr-nav__item"><a class="fr-nav__link" href="/new-group" target="_self">New Group</a></li>
-      <li class="fr-nav__item"><a class="fr-nav__link" href="/logout" target="_self">Logout</a></li>
+        {% for item in navigation %}
+      <li class="fr-nav__item"><a class="fr-nav__link" href="{{ item.url }}" target="_self">{{ item.label }}</a></li>
+        {% endfor %}
      </ul>
     </nav>
    </div>
