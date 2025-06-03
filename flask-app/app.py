@@ -328,7 +328,10 @@ def route_not_found():
 def route_groups():
     user = session.get("user", {})
     email = user.get("email")
+
     groups = get_groups_for_user(email)
+    # sort groups by name
+    groups.sort(key=lambda g: g.get("group_name", "").lower())
 
     return render_template(
         "groups.html",

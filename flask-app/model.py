@@ -109,16 +109,20 @@ def _fetch_all_groups(vary):
     print(f"Fetching all groups with vary={vary}")
     return grist.fetch_table("GroupMetadata")
 
+
 def fetch_all_groups():
     return _fetch_all_groups(request.environ.get("REQUEST_ID", ""))
+
 
 @functools.cache
 def _fetch_all_members(vary):
     print(f"Fetching all members with vary={vary}")
     return grist.fetch_table("Membership")
 
+
 def fetch_all_members():
     return _fetch_all_members(request.environ.get("REQUEST_ID", ""))
+
 
 def get_group_as_user(group_id, email: str = None, user_groups={}, with_members=True):
     group = list(filter(lambda g: g.ID2 == group_id, fetch_all_groups()))
@@ -130,7 +134,13 @@ def get_group_as_user(group_id, email: str = None, user_groups={}, with_members=
 
     user_groups = {}
     if email and not user_groups:
-        user_groups = list(filter(lambda g: g.UserEmail.lower().strip() == email and g.GroupID == group_id, fetch_all_members()))
+        user_groups = list(
+            filter(
+                lambda g: g.UserEmail.lower().strip() == email
+                and g.GroupID == group_id,
+                fetch_all_members(),
+            )
+        )
 
     def is_member():
         return any(
@@ -151,6 +161,8 @@ def get_group_as_user(group_id, email: str = None, user_groups={}, with_members=
     members = []
     if with_members:
         members = [m for m in fetch_all_members() if m.GroupID == group_id]
+        # sort members by email
+        members.sort(key=lambda m: m.UserEmail.lower().strip())
 
     allowed_domains = split_string_to_list(group[0].AllowedDomains) or []
     allowed_emails = split_string_to_list(group[0].AllowedEmails) or []
