@@ -3,6 +3,11 @@ resource "aws_lambda_function_url" "wsgi_latest" {
   authorization_type = "NONE"
 }
 
+resource "aws_lambda_function_url" "wsgi_latest_dsfr" {
+  function_name      = aws_lambda_function.lambda_dsfr.function_name
+  authorization_type = "NONE"
+}
+
 resource "random_string" "flask_secret_key" {
   length  = 32
   special = false
@@ -84,6 +89,45 @@ resource "aws_lambda_function" "lambda" {
   ]
 }
 
+resource "aws_lambda_function" "lambda_dsfr" {
+  filename         = "../flask-app/GovGroupsLambda.zip"
+  source_code_hash = filebase64sha256("../flask-app/GovGroupsLambda.zip")
+
+  description   = "GovGroups Lambda WSGI - DSFR"
+  function_name = "GovGroupsLambdaFunctionDSFR"
+  role          = aws_iam_role.lambda_role.arn
+  handler       = "wsgi.lambda_handler"
+  runtime       = "python3.12"
+
+  publish = true
+
+  memory_size = 512
+  timeout     = 60
+
+  lifecycle {
+    ignore_changes = [
+    ]
+  }
+
+  environment {
+    variables = {
+      SECRET_KEY        = local.flask_secret_key
+      CLIENT_ID         = var.CLIENT_ID
+      CLIENT_SECRET     = var.CLIENT_SECRET
+      GRIST_API_KEY     = var.GRIST_API_KEY
+      GRIST_SERVER      = var.GRIST_SERVER
+      GRIST_DOCUMENT_ID = var.GRIST_DOCUMENT_ID
+      OPENID_CONFIG_URL = "https://sso.service.security.gov.uk/.well-known/openid-configuration"
+      DESIGN_TYPE       = "dsfr"
+    }
+  }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.lambda_pa,
+    aws_cloudwatch_log_group.lambda_lg,
+  ]
+}
+
 resource "aws_iam_role" "lambda_role" {
   name               = "GovGroupsLambdaRole"
   assume_role_policy = data.aws_iam_policy_document.arpd.json
@@ -91,6 +135,11 @@ resource "aws_iam_role" "lambda_role" {
 
 resource "aws_cloudwatch_log_group" "lambda_lg" {
   name              = "/aws/lambda/GovGroupsLambdaFunction"
+  retention_in_days = 14
+}
+
+resource "aws_cloudwatch_log_group" "lambda_lg" {
+  name              = "/aws/lambda/GovGroupsLambdaFunctionDSFR"
   retention_in_days = 14
 }
 
