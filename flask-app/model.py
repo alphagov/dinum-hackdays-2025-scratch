@@ -49,6 +49,8 @@ def create_group(group, user_email):
                 "GroupName": group["group_name"],
                 "GroupDesc": group.get("group_desc", ""),
                 "GroupVisibility": group_visibility,
+                "AllowSelfJoin": True,
+                "AllowSelfLeave": True,
                 "ID2": group_id,
             }
         ],
