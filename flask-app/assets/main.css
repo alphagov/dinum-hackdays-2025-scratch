@@ -1,30 +1,15 @@
-.main-wrapper {
-    max-width: 1100px;
-    margin-right: 15px;
-    margin-left: 15px;
-    display: flex;
+.ul-fragment-links {
+    padding-bottom: 2em;
 }
 
-.split-nav {
-    width: 260px;
-}
-
-.split-nav ul {
+.ul-fragment-links ul {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.split-nav li {
+.ul-fragment-links li {
     padding-bottom: 0.5em;
-}
-
-.split-content {
-    display: flex;
-    min-width: 0;
-    padding-left: 30px;
-    flex: 1 1 100%;
-    flex-direction: column;
 }
 
 .hidden {
@@ -40,5 +25,5 @@
 }
 
 .htmx-request .loading-container {
-   display: block; 
+    display: block;
 }

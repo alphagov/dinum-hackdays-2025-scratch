@@ -1,77 +1,80 @@
 {% extends '_' + design_type + '.html' %}
 
 {% block content %}
-<div class="govuk-main-wrapper">
-    <div class="govuk-grid-row">
-        {% if group.visibility_for_user %}
-        <h1 class="govuk-heading-xl">
-            {{ group.group_name }}
-        </h1>
-        <p class="govuk-body-l">{{ group.description }}</p>
-        {% else %}
-        <h1 class="govuk-heading-xl">
-            Group not found or no access
-        </h1>
-        {% endif %}
-    </div>
-
-    {% if not user %}
-    <div class="govuk-grid-row">
-        <p class="govuk-body">You may have to log in to view, join or leave the group.</p>
-        <a href="?login=true" class="govuk-button">
-            Continue
-        </a>
-    </div>
-    {% endif %}
-
-    <div class="govuk-grid-row">
-        {% if group.could_join and not group.is_member %}
-        <form action="{{ url_for('route_join_group', group_id=group.group_id) }}" method="post">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-            <input type="hidden" name="from_page" value="group_member_join">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-            <button
-                    type="submit"
-                    class="govuk-button govuk-button--primary"
-                    id="join-button">
-                Join Group
-            </button>
-
-        </form>
-        {% elif group.visibility_for_user and not group.is_member %}
-        <p class="govuk-body">You cannot join this group.</p>
-        {% endif %}
-
-        {% if group.could_leave and group.is_member %}
-        <form action="{{ url_for('route_leave_group', group_id=group.group_id) }}" method="post">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-            <input type="hidden" name="from_page" value="group_member_join">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-            <button
-                    type="submit"
-                    class="govuk-button govuk-button--warning"
-                    id="join-button">
-                Leave Group
-            </button>
-        </form>
-        {% elif group.visibility_for_user and group.is_member %}
-        <p class="govuk-body">You cannot leave this group.</p>
-        {% endif %}
-
-        {% if group.allow_self_join %}
-        <details class="govuk-details">
-            <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                    Share this group
-                </span>
-            </summary>
-            <div class="govuk-details__text">
-                <img width=25% height=25% src="{{qr_code_data_uri}}" />
-                <pre>{{url}}</pre>
+<main>
+    <div class="govuk-width-container">
+        <div class="govuk-main-wrapper">
+            <div class="govuk-grid-row">
+                {% if group.visibility_for_user %}
+                <h1 class="govuk-heading-xl">
+                    {{ group.group_name }}
+                </h1>
+                <p class="govuk-body-l">{{ group.description }}</p>
+                {% else %}
+                <h1 class="govuk-heading-xl">
+                    Group not found or no access
+                </h1>
+                {% endif %}
             </div>
-        </details>
-        {% endif %}
-    </div>
 
-</div>
+            {% if not user %}
+            <div class="govuk-grid-row">
+                <p class="govuk-body">You may have to log in to view, join or leave the group.</p>
+                <a href="?login=true" class="govuk-button">
+                    Continue
+                </a>
+            </div>
+            {% endif %}
+
+            <div class="govuk-grid-row">
+                {% if group.could_join and not group.is_member %}
+                <form action="{{ url_for('route_join_group', group_id=group.group_id) }}" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <input type="hidden" name="from_page" value="group_member_join">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <button
+                            type="submit"
+                            class="govuk-button govuk-button--primary"
+                            id="join-button">
+                        Join Group
+                    </button>
+
+                </form>
+                {% elif group.visibility_for_user and not group.is_member %}
+                <p class="govuk-body">You cannot join this group.</p>
+                {% endif %}
+
+                {% if group.could_leave and group.is_member %}
+                <form action="{{ url_for('route_leave_group', group_id=group.group_id) }}" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <input type="hidden" name="from_page" value="group_member_join">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <button
+                            type="submit"
+                            class="govuk-button govuk-button--warning"
+                            id="join-button">
+                        Leave Group
+                    </button>
+                </form>
+                {% elif group.visibility_for_user and group.is_member %}
+                <p class="govuk-body">You cannot leave this group.</p>
+                {% endif %}
+
+                {% if group.allow_self_join %}
+                <details class="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Share this group
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <img width=25% height=25% src="{{qr_code_data_uri}}" />
+                        <pre>{{url}}</pre>
+                    </div>
+                </details>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</main>
 {% endblock %}

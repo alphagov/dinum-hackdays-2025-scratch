@@ -1,174 +1,179 @@
 {% extends '_' + design_type + '.html' %}
 
 {% block content %}
-<div class="main-wrapper">
-    <div class="split-nav ul-fragment-links">
-        <ul>
-            <li>
-                <p class="govuk-body">{{ group.group_name }}</p>
-            </li>
-            {% if group.is_admin %}
-            <li>
-                <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" href="/group/{{ group.group_id }}#members">
-                    Members
-                </a>
-            </li>
-            {% endif %}
-            <li>
-                <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" href="/group/{{ group.group_id }}#about">
-                    About
-                </a>
-            </li>
-            {% if group.is_admin %}
-            <li>
-                <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" href="/group/{{ group.group_id }}#settings">
-                    Settings
-                </a>
-            </li>
-            {% endif %}
-            {% if group.allow_self_join %}
-            <li>
-                <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" href="/group/{{ group.group_id }}#join">
-                    Share link to this group
-                </a>
-            </li>
-            {% endif %}
-        </ul>
-    </div>
-    <div class="split-content">
-        {% if group.is_admin %}
-        <main id="main-content-members" class="main-content hidden" role="main">
-            <h2 class="govuk-heading-l">
-                Members
-            </h2>
-
-            <a class="govuk-button govuk-button--secondary" href="/group/{{ group.group_id }}/members.csv">
-                Download CSV
-            </a>
-
-            <table class="govuk-table">
-                <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header">Email</th>
-                        <th scope="col" class="govuk-table__header">Type</th>
-                        <th scope="col" class="govuk-table__header">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="govuk-table__body">
-                    {% for member in group.members %}
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">{{ member.UserEmail }}</td>
-                        <td class="govuk-table__cell">{{ member.MemberType }}</td>
-                        <td class="govuk-table__cell">...</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </main>
-        {% endif %}
-        <main id="main-content-about" class="main-content hidden" role="main">
-            <h2 class="govuk-heading-l">
-                About
-            </h2>
-            <p class="govuk-body">{{ group.description }}</p>
-        </main>
-        {% if group.is_admin %}
-        <main id="main-content-settings" class="main-content hidden" role="main">
-            <h2 class="govuk-heading-l">
-                Settings
-            </h2>
-
-            <form method="post" action="/save-group">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                <input type="hidden" name="group_id" value="{{ group.group_id }}" />
-
-                <div class="govuk-form-group">
-                    <h2 class="govuk-label-wrapper">
-                        <label class="govuk-label govuk-label--m" for="group_desc">
-                            How would you describe your group to your users?
-                        </label>
+<div class="govuk-width-container">
+    <a href="#" class="govuk-back-link">Back</a>
+    <main class="govuk-main-wrapper">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-one-third ul-fragment-links">
+                <ul>
+                    <li>
+                        <p class="govuk-body">{{ group.group_name }}</p>
+                    </li>
+                    {% if group.is_admin %}
+                    <li>
+                        <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" href="/group/{{ group.group_id }}#members">
+                            Members
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li>
+                        <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" href="/group/{{ group.group_id }}#about">
+                            About
+                        </a>
+                    </li>
+                    {% if group.is_admin %}
+                    <li>
+                        <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" href="/group/{{ group.group_id }}#settings">
+                            Settings
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% if group.allow_self_join %}
+                    <li>
+                        <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" href="/group/{{ group.group_id }}#join">
+                            Share link to this group
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="govuk-grid-column-two-thirds">
+                {% if group.is_admin %}
+                <main id="main-content-members" class="main-content hidden" role="main">
+                    <h2 class="govuk-heading-l">
+                        Members
                     </h2>
-                    <textarea class="govuk-textarea" id="group_desc" name="group_desc" rows="5">{{ group.description }}</textarea>
-                </div>
 
-                <div class="govuk-form-group">
-                    <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            <h2 class="govuk-fieldset__heading">
-                                What options do you want for your group?
+                    <a class="govuk-button govuk-button--secondary" href="/group/{{ group.group_id }}/members.csv">
+                        Download CSV
+                    </a>
+
+                    <table class="govuk-table">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header">Email</th>
+                                <th scope="col" class="govuk-table__header">Type</th>
+                                <th scope="col" class="govuk-table__header">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            {% for member in group.members %}
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">{{ member.UserEmail }}</td>
+                                <td class="govuk-table__cell">{{ member.MemberType }}</td>
+                                <td class="govuk-table__cell">...</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </main>
+                {% endif %}
+                <main id="main-content-about" class="main-content hidden" role="main">
+                    <h2 class="govuk-heading-l">
+                        About
+                    </h2>
+                    <p class="govuk-body">{{ group.description }}</p>
+                </main>
+                {% if group.is_admin %}
+                <main id="main-content-settings" class="main-content hidden" role="main">
+                    <h2 class="govuk-heading-l">
+                        Settings
+                    </h2>
+
+                    <form method="post" action="/save-group">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        <input type="hidden" name="group_id" value="{{ group.group_id }}" />
+
+                        <div class="govuk-form-group">
+                            <h2 class="govuk-label-wrapper">
+                                <label class="govuk-label govuk-label--m" for="group_desc">
+                                    How would you describe your group to your users?
+                                </label>
                             </h2>
-                        </legend>
-                        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                            <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="AllowJoin" name="AllowJoin" type="checkbox" value="AllowJoin" {% if group.allow_self_join %}checked="checked" {% endif %}>
-                                <label class="govuk-label govuk-checkboxes__label" for="AllowJoin">
-                                    Allow self joining
-                                </label>
-                            </div>
-                            <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="AllowLeave" name="AllowLeave" type="checkbox" value="AllowLeave" {% if group.allow_self_leave %}checked="checked" {% endif %}>
-                                <label class="govuk-label govuk-checkboxes__label" for="AllowLeave">
-                                    Allow self leaving
-                                </label>
-                            </div>
+                            <textarea class="govuk-textarea" id="group_desc" name="group_desc" rows="5">{{ group.description }}</textarea>
                         </div>
-                    </fieldset>
-                </div>
 
-                <div class="govuk-form-group">
-                    <label class="govuk-label govuk-label--m" for="group_visibility">
-                        Select the appropriate permission for your group
-                    </label>
-                    <select class="govuk-select" id="group_visibility" name="group_visibility">
-                        <option value="Any" {% if group.group_visibility=="Any" %}selected="selected" {% endif %}>Any - visible to any person</option>
-                        <option value="Authorised" {% if group.group_visibility=="Authorised" %}selected="selected" {% endif %}>Authorised - visible to specified domains</option>
-                        <option value="Private" {% if group.group_visibility=="Private" %}selected="selected" {% endif %}>Private - closed group that requires owners and managers to add people</option>
-                    </select>
-                </div>
+                        <div class="govuk-form-group">
+                            <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                    <h2 class="govuk-fieldset__heading">
+                                        What options do you want for your group?
+                                    </h2>
+                                </legend>
+                                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                                    <div class="govuk-checkboxes__item">
+                                        <input class="govuk-checkboxes__input" id="AllowJoin" name="AllowJoin" type="checkbox" value="AllowJoin" {% if group.allow_self_join %}checked="checked" {% endif %}>
+                                        <label class="govuk-label govuk-checkboxes__label" for="AllowJoin">
+                                            Allow self joining
+                                        </label>
+                                    </div>
+                                    <div class="govuk-checkboxes__item">
+                                        <input class="govuk-checkboxes__input" id="AllowLeave" name="AllowLeave" type="checkbox" value="AllowLeave" {% if group.allow_self_leave %}checked="checked" {% endif %}>
+                                        <label class="govuk-label govuk-checkboxes__label" for="AllowLeave">
+                                            Allow self leaving
+                                        </label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
 
-                <div class="govuk-form-group">
-                    <h2 class="govuk-label-wrapper">
-                        <label class="govuk-label govuk-label--m" for="combined_allowed">
-                            Which domains or emails should be allowed?
-                        </label>
+                        <div class="govuk-form-group">
+                            <label class="govuk-label govuk-label--m" for="group_visibility">
+                                Select the appropriate permission for your group
+                            </label>
+                            <select class="govuk-select" id="group_visibility" name="group_visibility">
+                                <option value="Any" {% if group.group_visibility=="Any" %}selected="selected" {% endif %}>Any - visible to any person</option>
+                                <option value="Authorised" {% if group.group_visibility=="Authorised" %}selected="selected" {% endif %}>Authorised - visible to specified domains</option>
+                                <option value="Private" {% if group.group_visibility=="Private" %}selected="selected" {% endif %}>Private - closed group that requires owners and managers to add people</option>
+                            </select>
+                        </div>
+
+                        <div class="govuk-form-group">
+                            <h2 class="govuk-label-wrapper">
+                                <label class="govuk-label govuk-label--m" for="combined_allowed">
+                                    Which domains or emails should be allowed?
+                                </label>
+                            </h2>
+                            <div id="more-detail-hint" class="govuk-hint">
+                                This only applies to Authorised or Private groups. You can enter multiple domains or emails separated by commas.
+                            </div>
+                            <textarea class="govuk-textarea" id="combined_allowed" name="combined_allowed"
+                                      rows="5">{{ ', '.join(group.allowed_domains) }}{% if group.allowed_domains and group.allowed_emails %}, {% endif %}{{ ', '.join(group.allowed_emails) }}</textarea>
+                        </div>
+
+                        <button type="submit" class="govuk-button" data-module="govuk-button" onclick="disable_button(this);">
+                            Save Changes
+                        </button>
+                    </form>
+
+                    <form method="post" action="/delete-group">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        <input type="hidden" name="group_id" value="{{ group.group_id }}" />
+                        <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button" onclick="disable_button(this);">
+                            Delete Group
+                        </button>
+                    </form>
+                </main>
+                {% endif %}
+
+                {% if group.allow_self_join %}
+                <main id="main-content-join" class="main-content hidden" role="main">
+                    <h2 class="govuk-heading-l">
+                        Share link to this group
                     </h2>
-                    <div id="more-detail-hint" class="govuk-hint">
-                        This only applies to Authorised or Private groups. You can enter multiple domains or emails separated by commas.
+                    <p class="govuk-body">You can share this link with others to allow them to join the group:</p>
+                    <div class="govuk-input__wrapper">
+                        <img width=50% height=50% src="{{qr_code_data_uri}}" />
                     </div>
-                    <textarea class="govuk-textarea" id="combined_allowed" name="combined_allowed"
-                              rows="5">{{ ', '.join(group.allowed_domains) }}{% if group.allowed_domains and group.allowed_emails %}, {% endif %}{{ ', '.join(group.allowed_emails) }}</textarea>
-                </div>
-
-                <button type="submit" class="govuk-button" data-module="govuk-button" onclick="disable_button(this);">
-                    Save Changes
-                </button>
-            </form>
-
-            <form method="post" action="/delete-group">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                <input type="hidden" name="group_id" value="{{ group.group_id }}" />
-                <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button" onclick="disable_button(this);">
-                    Delete Group
-                </button>
-            </form>
-        </main>
-        {% endif %}
-
-        {% if group.allow_self_join %}
-        <main id="main-content-join" class="main-content hidden" role="main">
-            <h2 class="govuk-heading-l">
-                Share link to this group
-            </h2>
-            <p class="govuk-body">You can share this link with others to allow them to join the group:</p>
-            <div class="govuk-input__wrapper">
-                <img width=50% height=50% src="{{qr_code_data_uri}}" />
+                    <div class="govuk-input__wrapper">
+                        <input class="govuk-input" type="text" value="{{ share_url }}" readonly>
+                    </div>
+                </main>
+                {% endif %}
             </div>
-            <div class="govuk-input__wrapper">
-                <input class="govuk-input" type="text" value="{{ share_url }}" readonly>
-            </div>
-        </main>
-        {% endif %}
-    </div>
+        </div>
+    </main>
 </div>
 
 
