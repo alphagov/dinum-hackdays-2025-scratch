@@ -7,29 +7,36 @@
             <li>
                 <p class="govuk-body">{{ group.group_name }}</p>
             </li>
+            {% if group.is_admin %}
             <li>
                 <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" href="/group/{{ group.group_id }}#members">
                     Members
                 </a>
             </li>
+            {% endif %}
             <li>
                 <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" href="/group/{{ group.group_id }}#about">
                     About
                 </a>
             </li>
+            {% if group.is_admin %}
             <li>
                 <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" href="/group/{{ group.group_id }}#settings">
                     Settings
                 </a>
             </li>
+            {% endif %}
+            {% if group.allow_self_join %}
             <li>
                 <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" href="/group/{{ group.group_id }}/join">
                     Share link to this group
                 </a>
             </li>
+            {% endif %}
         </ul>
     </div>
     <div class="split-content">
+        {% if group.is_admin %}
         <main id="main-content-members" class="main-content hidden" role="main">
             <h2 class="govuk-heading-l">
                 Members
@@ -58,12 +65,14 @@
                 </tbody>
             </table>
         </main>
+        {% endif %}
         <main id="main-content-about" class="main-content hidden" role="main">
             <h2 class="govuk-heading-l">
                 About
             </h2>
             <p class="govuk-body">{{ group.group_desc }}</p>
         </main>
+        {% if group.is_admin %}
         <main id="main-content-settings" class="main-content hidden" role="main">
             <h2 class="govuk-heading-l">
                 Settings
@@ -77,6 +86,7 @@
                 </button>
             </form>
         </main>
+        {% endif %}
     </div>
 </div>
 

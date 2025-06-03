@@ -30,7 +30,7 @@
                 <p class="govuk-body-s">{{ group.description }}</p>
             </td>
             <td class="govuk-table__cell" id="group-{{ group.group_id }}">
-                {% if group.is_member %}
+                {% if group.is_member and group.could_leave %}
                 <form action=" {{ url_for('route_leave_group', group_id=group.group_id) }}" method="post">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <button
@@ -43,7 +43,7 @@
                             hx-indicator="#group-{{ group.group_id }}"
                             class="govuk-button govuk-button--warning">Leave Group</button>
                 </form>
-                {% else %}
+                {% elif group.could_join %}
                 <form action="{{ url_for('route_join_group', group_id=group.group_id) }}" method="post">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <button

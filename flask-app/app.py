@@ -151,8 +151,9 @@ def route_new_group():
             "group_desc": request.form.get("group_desc", "").strip(),
             "group_visibility": request.form.get("group_visibility", "Private"),
         }
-        if group["group_name"]:
-            flash(f'Group "{group['group_name']}" created successfully', "success")
+        group_name = group["group_name"]
+        if group_name:
+            flash(f'Group "{group_name}" created successfully', "success")
             group_id = create_group(group=group, user_email=email)
             if group_id:
                 return redirect(f"/group/{group_id}#settings")
@@ -180,17 +181,17 @@ def route_group_members_join(group_id: str = None):
         session["redirect_url"] = request.url
         return redirect(url_for("route_login"))
 
-    group = get_group_as_user(group_id, email)
+    group = get_group_as_user(group_id, email, with_members=False)
     if not group:
         return redirect(url_for("route_not_found"))
 
     url = url_for("route_group_members_join", group_id=group_id, _external=True)
 
     qr = qrcode.QRCode(
-        version=1,              # controls the size of the QR code (1 = 21×21). Increase for more data.
+        version=1,  # controls the size of the QR code (1 = 21×21). Increase for more data.
         error_correction=qrcode.constants.ERROR_CORRECT_M,
-        box_size=10,            # pixel size of each “box” in the QR
-        border=4,               # thickness of the border (minimum is 4 according to specs)
+        box_size=10,  # pixel size of each “box” in the QR
+        border=4,  # thickness of the border (minimum is 4 according to specs)
     )
     qr.add_data(url)
     qr.make(fit=True)

@@ -18,10 +18,11 @@ function changeContentPaneByFragment(defaultFragment) {
 const ulFragmentLinks = document.getElementsByClassName("ul-fragment-links");
 
 if (ulFragmentLinks.length > 0) {
+    const defaultFragment = document.getElementById("main-content-members") ? "members" : "about";
     window.addEventListener('hashchange', function () {
-        changeContentPaneByFragment("members")
+        changeContentPaneByFragment(defaultFragment)
     });
-    changeContentPaneByFragment("members");
+    changeContentPaneByFragment(defaultFragment);
 }
 
 function disable_button(button) {

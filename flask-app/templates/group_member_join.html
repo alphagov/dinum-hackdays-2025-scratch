@@ -36,7 +36,7 @@
                     id="join-button">
                 Join Group
             </button>
-            
+
         </form>
         {% elif group.visibility_for_user and not group.is_member %}
         <p class="govuk-body">You cannot join this group.</p>
@@ -57,10 +57,12 @@
         {% elif group.visibility_for_user and group.is_member %}
         <p class="govuk-body">You cannot leave this group.</p>
         {% endif %}
+
+        {% if group.allow_self_join %}
         <details class="govuk-details">
             <summary class="govuk-details__summary">
                 <span class="govuk-details__summary-text">
-                Share this group
+                    Share this group
                 </span>
             </summary>
             <div class="govuk-details__text">
@@ -68,6 +70,7 @@
                 <pre>{{url}}</pre>
             </div>
         </details>
+        {% endif %}
     </div>
 
 </div>

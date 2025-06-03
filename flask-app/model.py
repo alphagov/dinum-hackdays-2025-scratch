@@ -64,26 +64,15 @@ def delete_group(group_id, user_email):
 def get_groups_for_user(email):
     all_groups = grist.fetch_table("GroupMetadata")
     user_groups = grist.fetch_table("Membership", filters={"UserEmail": email})
-    groups_user_owns = filter(lambda ul: ul.MemberType == "Owner", user_groups)
-
-    def is_member(group):
-        return group.ID2 in map(lambda ul: ul.GroupID, user_groups)
-
-    def is_admin(group):
-        return group.ID2 in map(lambda ul: ul.GroupID, groups_user_owns)
-
-    def convert_group(group):
-        print(group)
-        l = {
-            "group_id": group.ID2,
-            "group_name": group.GroupName,
-            "is_member": is_member(group),
-            "is_admin": is_admin(group),
-            "description": group.GroupDesc,
-        }
-        return l
-
-    return map(convert_group, all_groups)
+    groups = [
+        get_group_as_user(
+            grp.ID2, email=email, user_groups=user_groups, with_members=False
+        )
+        for grp in all_groups
+    ]
+    return [
+        grp for grp in groups if grp and grp["visibility_for_user"] or grp["is_member"]
+    ]
 
 
 def split_string_to_list(string):
@@ -92,7 +81,7 @@ def split_string_to_list(string):
     return [s.strip().lower() for s in string.split(",") if s.strip()]
 
 
-def get_group_as_user(group_id, email: str = None, with_members=True):
+def get_group_as_user(group_id, email: str = None, user_groups={}, with_members=True):
     group = grist.fetch_table("GroupMetadata", filters={"ID2": group_id})
     if not group:
         return None
@@ -101,16 +90,26 @@ def get_group_as_user(group_id, email: str = None, with_members=True):
         email = email.lower().strip()
 
     user_groups = {}
-    if email:
+    if email and not user_groups:
         user_groups = grist.fetch_table(
             "Membership", filters={"UserEmail": email, "GroupID": group_id}
         )
 
     def is_member():
-        return len(user_groups) > 0
+        return any(
+            ul.GroupID == group_id
+            for ul in user_groups
+            if ul.GroupID == group_id and ul.UserEmail.lower().strip() == email
+        )
 
     def is_admin():
-        return len(list(filter(lambda ul: ul.MemberType == "Owner", user_groups))) > 0
+        return any(
+            ul.GroupID == group_id
+            for ul in user_groups
+            if ul.GroupID == group_id
+            and ul.UserEmail.lower().strip() == email
+            and ul.MemberType == "Owner"
+        )
 
     members = []
     if with_members:
