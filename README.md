@@ -13,6 +13,7 @@ A tool to set up and manage mailing lists for public sector users, and for the r
 https://github.com/alphagov/dinum-hackdays-2025-scratch/tree/main
 ## Deliverables
 (Provide a link to a live demo, if you have one)(Add screenshots (image, gif or video) and presentation deck to `/asset`
+* Live demo - https://437lvqhrjzbuubnxfxazzzkbpu0nwgzc.lambda-url.eu-west-2.on.aws/ 
 * Presentation - [https://docs.google.com/presentation/d/1AxnooYJqGBbQdJikXHOZXs9NgkPobRFHj4289d9yYCg](https://docs.google.com/presentation/d/1bEflAo_EXh-ezS0rxg_UG80L-BLR7MQECo3hWgdrUhQ/edit?slide=id.g32d739b8369_0_4#slide=id.g32d739b8369_0_4)
 ## Key Achievements
 (Highlight the main features or breakthroughs)
