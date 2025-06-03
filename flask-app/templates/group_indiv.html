@@ -132,6 +132,9 @@
                             Which domains or emails should be allowed?
                         </label>
                     </h2>
+                    <div id="more-detail-hint" class="govuk-hint">
+                        This only applies to Authorised or Private groups. You can enter multiple domains or emails separated by commas.
+                    </div>
                     <textarea class="govuk-textarea" id="combined_allowed" name="combined_allowed"
                               rows="5">{{ ', '.join(group.allowed_domains) }}{% if group.allowed_domains and group.allowed_emails %}, {% endif %}{{ ', '.join(group.allowed_emails) }}</textarea>
                 </div>
