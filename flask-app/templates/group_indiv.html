@@ -12,26 +12,26 @@
                     </li>
                     {% if group.is_admin %}
                     <li>
-                        <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" href="/group/{{ group.group_id }}#members">
+                        <a class="{{ design_dictionary.a }} govuk-link--no-visited-state govuk-link--no-underline" href="/group/{{ group.group_id }}#members">
                             Members
                         </a>
                     </li>
                     {% endif %}
                     <li>
-                        <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" href="/group/{{ group.group_id }}#about">
+                        <a class="{{ design_dictionary.a }} govuk-link--no-visited-state govuk-link--no-underline" href="/group/{{ group.group_id }}#about">
                             About
                         </a>
                     </li>
                     {% if group.is_admin %}
                     <li>
-                        <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" href="/group/{{ group.group_id }}#settings">
+                        <a class="{{ design_dictionary.a }} govuk-link--no-visited-state govuk-link--no-underline" href="/group/{{ group.group_id }}#settings">
                             Settings
                         </a>
                     </li>
                     {% endif %}
                     {% if group.allow_self_join %}
                     <li>
-                        <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" href="/group/{{ group.group_id }}#join">
+                        <a class="{{ design_dictionary.a }} govuk-link--no-visited-state govuk-link--no-underline" href="/group/{{ group.group_id }}#join">
                             Share link to this group
                         </a>
                     </li>
@@ -45,15 +45,15 @@
                         Members
                     </h2>
 
-                    <a class="govuk-button govuk-button--secondary" href="/group/{{ group.group_id }}/members.csv">
+                    <a class="{{ design_dictionary.button }} govuk-button--secondary" href="/group/{{ group.group_id }}/members.csv">
                         Download CSV
                     </a>
 
-                    <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                    <button class="{{ design_dictionary.button }} govuk-button--secondary" data-module="govuk-button">
                         Send Email
                     </button>
 
-                    <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                    <button class="{{ design_dictionary.button }} govuk-button--secondary" data-module="govuk-button">
                         Sync with Matrix
                     </button>
 
@@ -150,7 +150,7 @@
                                       rows="5">{{ ', '.join(group.allowed_domains) }}{% if group.allowed_domains and group.allowed_emails %}, {% endif %}{{ ', '.join(group.allowed_emails) }}</textarea>
                         </div>
 
-                        <button type="submit" class="govuk-button" data-module="govuk-button" onclick="disable_button(this);">
+                        <button type="submit" class="{{ design_dictionary.button }}" data-module="govuk-button" onclick="disable_button(this);">
                             Save Changes
                         </button>
                     </form>
@@ -158,7 +158,7 @@
                     <form method="post" action="/delete-group">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                         <input type="hidden" name="group_id" value="{{ group.group_id }}" />
-                        <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button" onclick="disable_button(this);">
+                        <button type="submit" class="{{ design_dictionary.button }} govuk-button--warning" data-module="govuk-button" onclick="disable_button(this);">
                             Delete Group
                         </button>
                     </form>

@@ -20,7 +20,7 @@
             {% if not user %}
             <div class="govuk-grid-row">
                 <p class="govuk-body">You may have to log in to view, join or leave the group.</p>
-                <a href="?login=true" class="govuk-button">
+                <a href="?login=true" class="{{ design_dictionary.button }}">
                     Continue
                 </a>
             </div>
@@ -34,7 +34,7 @@
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <button
                             type="submit"
-                            class="govuk-button govuk-button--primary"
+                            class="{{ design_dictionary.button }} govuk-button--primary"
                             id="join-button">
                         Join Group
                     </button>
@@ -51,7 +51,7 @@
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <button
                             type="submit"
-                            class="govuk-button govuk-button--warning"
+                            class="{{ design_dictionary.button }} govuk-button--warning"
                             id="join-button">
                         Leave Group
                     </button>

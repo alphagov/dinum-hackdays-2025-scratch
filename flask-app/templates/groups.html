@@ -5,7 +5,7 @@
 <h1 class="govuk-heading-xl">Groups</h1>
 
 {% if can_create_group %}
-<a href="{{ url_for('route_new_group') }}" class="govuk-button govuk-button--secondary">
+<a href="{{ url_for('route_new_group') }}" class="{{ design_dictionary.button }} govuk-button--secondary">
     Create new group
 </a>
 {% endif %}
@@ -29,7 +29,7 @@
         {% for group in groups %}
         <tr class="govuk-table__row">
             <td class="govuk-table__cell">
-                <a href="/group/{{ group.group_id }}" class="govuk-link govuk-link--no-visited-state govuk-link--no-underline">{{ group.group_name }}</a>
+                <a href="/group/{{ group.group_id }}" class="{{ design_dictionary.a }} govuk-link--no-visited-state govuk-link--no-underline">{{ group.group_name }}</a>
                 <p class="govuk-body-s">{{ group.description }}</p>
             </td>
             <td class="govuk-table__cell">
@@ -47,7 +47,7 @@
                             hx-swap="outerHTML"
                             hx-disabled-elt="this"
                             hx-indicator="#group-{{ group.group_id }}"
-                            class="govuk-button govuk-button--warning">Leave Group</button>
+                            class="{{ design_dictionary.button }} govuk-button--warning">Leave Group</button>
                 </form>
                 {% elif not group.is_member and group.could_join %}
                 <form action="{{ url_for('route_join_group', group_id=group.group_id) }}" method="post">
@@ -60,7 +60,7 @@
                             hx-swap="outerHTML"
                             hx-disabled-elt="this"
                             hx-indicator="#group-{{ group.group_id }}"
-                            class="govuk-button ">Join Group</button>
+                            class="{{ design_dictionary.button }} ">Join Group</button>
                 </form>
                 {% endif %}
                 <p class="loading-container govuk-body-m">Loading...</p>
