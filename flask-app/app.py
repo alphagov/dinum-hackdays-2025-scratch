@@ -13,6 +13,7 @@ from model import (
     leave_group,
     create_group,
     delete_group,
+    save_group,
 )
 from flask_wtf.csrf import CSRFProtect
 import qrcode
@@ -113,6 +114,34 @@ def route_group_indiv(group_id: str = None):
             {"label": "Logout", "url": url_for("route_logout")},
         ],
     )
+
+
+@app.route("/save-group", methods=["POST"])
+@RequireUser
+def route_save_group():
+    group_id = request.form.get("group_id", "").strip()
+    if not group_id:
+        return "Unknown group", 404
+
+    group_desc = request.form.get("group_desc", "").strip()
+    group_visibility = request.form.get("group_visibility", "Private").strip().title()
+    if group_visibility not in ["Private", "Authorised", "Any"]:
+        return "Invalid group visibility", 400
+
+    group_changes = {
+        "GroupID": group_id,
+        "GroupDesc": group_desc,
+        "GroupVisibility": group_visibility,
+        "AllowSelfJoin": request.form.get("AllowJoin", "").strip() == "AllowJoin",
+        "AllowSelfLeave": request.form.get("AllowLeave", "").strip() == "AllowLeave",
+    }
+
+    success = save_group(group_changes)
+    if success:
+        flash("Group updated successfully", "success")
+        return redirect(f"/group/{group_id}#settings")
+
+    return "Error", 500
 
 
 @app.route("/delete-group", methods=["POST"])

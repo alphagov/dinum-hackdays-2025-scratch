@@ -11,6 +11,27 @@ GRIST_SERVER = os.getenv("GRIST_SERVER")
 grist = GristDocAPI(GRIST_DOC_ID, server=GRIST_SERVER)
 
 
+def save_group(group_changes):
+    try:
+        group_id = group_changes.get("GroupID", "")
+        group = grist.fetch_table("GroupMetadata", filters={"ID2": group_id})
+        if not group:
+            return None
+
+        group_changes["id"] = group[0].id
+        group_changes["ID2"] = group_changes.pop("GroupID")
+
+        grist.update_records(
+            "GroupMetadata",
+            [group_changes],
+        )
+    except Exception as e:
+        print(f"Error saving group: {e}")
+        return False
+
+    return True
+
+
 def create_group(group, user_email):
     # create a new group in the GroupMetadata table
     group_id = str(uuid.uuid4())

@@ -70,14 +70,67 @@
             <h2 class="govuk-heading-l">
                 About
             </h2>
-            <p class="govuk-body">{{ group.group_desc }}</p>
+            <p class="govuk-body">{{ group.description }}</p>
         </main>
         {% if group.is_admin %}
         <main id="main-content-settings" class="main-content hidden" role="main">
             <h2 class="govuk-heading-l">
                 Settings
             </h2>
-            <p class="govuk-body">{{ group.group_desc }}</p>
+
+            <form method="post" action="/save-group">
+
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <input type="hidden" name="group_id" value="{{ group.group_id }}" />
+                <div class="govuk-form-group">
+                    <h2 class="govuk-label-wrapper">
+                        <label class="govuk-label govuk-label--m" for="group_desc">
+                            How would you describe your group to your users?
+                        </label>
+                    </h2>
+                    <textarea class="govuk-textarea" id="group_desc" name="group_desc" rows="5">{{ group.description }}</textarea>
+                </div>
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            <h2 class="govuk-fieldset__heading">
+                                What options do you want for your group?
+                            </h2>
+                        </legend>
+                        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="AllowJoin" name="AllowJoin" type="checkbox" value="AllowJoin" {% if group.allow_self_join %}checked="checked" {% endif %}>
+                                <label class="govuk-label govuk-checkboxes__label" for="AllowJoin">
+                                    Allow self joining
+                                </label>
+                            </div>
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="AllowLeave" name="AllowLeave" type="checkbox" value="AllowLeave" {% if group.allow_self_leave %}checked="checked" {% endif %}>
+                                <label class="govuk-label govuk-checkboxes__label" for="AllowLeave">
+                                    Allow self leaving
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-label--m" for="group_visibility">
+                        Select the appropriate permission for your group
+                    </label>
+                    <select class="govuk-select" id="group_visibility" name="group_visibility">
+                        <option value="Any" {% if group.group_visibility=="Any" %}selected="selected" {% endif %}>Any - visible to any person</option>
+                        <option value="Authorised" {% if group.group_visibility=="Authorised" %}selected="selected" {% endif %}>Authorised - visible to specified domains</option>
+                        <option value="Private" {% if group.group_visibility=="Private" %}selected="selected" {% endif %}>Private - closed group that requires owners and managers to add people</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="govuk-button" data-module="govuk-button" onclick="disable_button(this);">
+                    Save Changes
+                </button>
+            </form>
+
             <form method="post" action="/delete-group">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                 <input type="hidden" name="group_id" value="{{ group.group_id }}" />
