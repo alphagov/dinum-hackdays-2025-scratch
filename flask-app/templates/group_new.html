@@ -5,29 +5,29 @@
 <h1 class="govuk-heading-l">New Group</h1>
 <form method="post">
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-    <div class="govuk-form-group">
-        <h2 class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--m" for="group_name">
+    <div class="{{ design_dictionary.formgroup }}">
+        <h2 class="{{ design_dictionary.labelwrap }}">
+            <label class="{{ design_dictionary.label }} govuk-label--m" for="group_name">
                 What is the name of your group?
             </label>
         </h2>
-        <input class="govuk-input" id="group_name" name="group_name" type="text">
+        <input class="{{ design_dictionary.input }}" id="group_name" name="group_name" type="text">
     </div>
 
-    <div class="govuk-form-group">
-        <h2 class="govuk-label-wrapper">
-            <label class="govuk-label govuk-label--m" for="group_desc">
+    <div class="{{ design_dictionary.formgroup }}">
+        <h2 class="{{ design_dictionary.labelwrap }}">
+            <label class="{{ design_dictionary.label }} govuk-label--m" for="group_desc">
                 How would you describe your group to your users?
             </label>
         </h2>
-        <textarea class="govuk-textarea" id="group_desc" name="group_desc" rows="5"></textarea>
+        <textarea class="{{ design_dictionary.textarea }}" id="group_desc" name="group_desc" rows="5"></textarea>
     </div>
 
-    <div class="govuk-form-group">
-        <label class="govuk-label govuk-label--m" for="group_visibility">
+    <div class="{{ design_dictionary.formgroup }}">
+        <label class="{{ design_dictionary.label }} govuk-label--m" for="group_visibility">
             Select the appropriate permission for your group
         </label>
-        <select class="govuk-select" id="group_visibility" name="group_visibility">
+        <select class="{{ design_dictionary.select }}" id="group_visibility" name="group_visibility">
             <option value="any">Any - visible to any person</option>
             <option value="authorised">Authorised - visible to specified domains</option>
             <option value="private">Private - closed group that requires owners and managers to add people</option>
