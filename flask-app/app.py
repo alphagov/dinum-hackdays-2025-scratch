@@ -15,6 +15,9 @@ from model import (
     delete_group,
 )
 from flask_wtf.csrf import CSRFProtect
+import qrcode
+import io
+import base64
 
 load_dotenv()  # take environment variables
 
@@ -181,6 +184,28 @@ def route_group_members_join(group_id: str = None):
     if not group:
         return redirect(url_for("route_not_found"))
 
+    url = url_for("route_group_members_join", group_id=group_id, _external=True)
+
+    qr = qrcode.QRCode(
+        version=1,              # controls the size of the QR code (1 = 21×21). Increase for more data.
+        error_correction=qrcode.constants.ERROR_CORRECT_M,
+        box_size=10,            # pixel size of each “box” in the QR
+        border=4,               # thickness of the border (minimum is 4 according to specs)
+    )
+    qr.add_data(url)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+
+    # 3. Write the image to an in-memory buffer as PNG:
+    buffer = io.BytesIO()
+    img.save(buffer, format="PNG")
+    png_bytes = buffer.getvalue()
+    buffer.close()
+
+    # 4. Encode those PNG bytes as Base64, then build a data URI:
+    b64 = base64.b64encode(png_bytes).decode("ascii")
+    data_uri = f"data:image/png;base64,{b64}"
+
     return render_template(
         "group_member_join.html",
         group=group,
@@ -193,6 +218,8 @@ def route_group_members_join(group_id: str = None):
                 "url": url_for("route_logout") if user else "?login=true",
             },
         ],
+        qr_code_data_uri=data_uri,
+        url=url,
     )
 
 
