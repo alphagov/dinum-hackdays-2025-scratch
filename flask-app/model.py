@@ -2,6 +2,8 @@ from grist_api import GristDocAPI
 import os
 import uuid
 from dotenv import load_dotenv
+import functools
+from flask import request
 
 load_dotenv()  # take environment variables
 
@@ -102,8 +104,24 @@ def split_string_to_list(string):
     return [s.strip().lower() for s in string.split(",") if s.strip()]
 
 
+@functools.cache
+def _fetch_all_groups(vary):
+    print(f"Fetching all groups with vary={vary}")
+    return grist.fetch_table("GroupMetadata")
+
+def fetch_all_groups():
+    return _fetch_all_groups(request.environ.get("REQUEST_ID", ""))
+
+@functools.cache
+def _fetch_all_members(vary):
+    print(f"Fetching all members with vary={vary}")
+    return grist.fetch_table("Membership")
+
+def fetch_all_members():
+    return _fetch_all_members(request.environ.get("REQUEST_ID", ""))
+
 def get_group_as_user(group_id, email: str = None, user_groups={}, with_members=True):
-    group = grist.fetch_table("GroupMetadata", filters={"ID2": group_id})
+    group = list(filter(lambda g: g.ID2 == group_id, fetch_all_groups()))
     if not group:
         return None
 
@@ -112,9 +130,7 @@ def get_group_as_user(group_id, email: str = None, user_groups={}, with_members=
 
     user_groups = {}
     if email and not user_groups:
-        user_groups = grist.fetch_table(
-            "Membership", filters={"UserEmail": email, "GroupID": group_id}
-        )
+        user_groups = list(filter(lambda g: g.UserEmail.lower().strip() == email and g.GroupID == group_id, fetch_all_members()))
 
     def is_member():
         return any(
@@ -134,7 +150,7 @@ def get_group_as_user(group_id, email: str = None, user_groups={}, with_members=
 
     members = []
     if with_members:
-        members = grist.fetch_table("Membership", filters={"GroupID": group_id})
+        members = [m for m in fetch_all_members() if m.GroupID == group_id]
 
     allowed_domains = split_string_to_list(group[0].AllowedDomains) or []
     allowed_emails = split_string_to_list(group[0].AllowedEmails) or []

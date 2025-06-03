@@ -19,6 +19,8 @@ from flask_wtf.csrf import CSRFProtect
 import qrcode
 import io
 import base64
+from request_id import RequestId
+
 
 load_dotenv()  # take environment variables
 
@@ -26,6 +28,7 @@ DESIGN_TYPE = os.getenv("DESIGN_TYPE", "govuk").lower()
 
 app = Flask(__name__, template_folder="templates", static_folder="assets")
 app.secret_key = os.getenv("SECRET_KEY", os.urandom(24))
+RequestId(app)
 
 app.jinja_env.globals.update(
     design_type=DESIGN_TYPE,
