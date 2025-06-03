@@ -105,9 +105,13 @@ def route_group_indiv(group_id: str = None):
     if not group:
         return redirect(url_for("route_not_found"))
 
+    data_uri, url = get_share_links(group_id)
+
     return render_template(
         "group_indiv.html",
         group=group,
+        qr_code_data_uri=data_uri,
+        share_url=url,
         navigation=[
             {"label": "Home", "url": url_for("route_root")},
             {"label": "Groups", "url": url_for("route_groups"), "active": True},
@@ -213,21 +217,7 @@ def route_new_group():
     )
 
 
-@app.route("/group/<group_id>/leave")
-@app.route("/group/<group_id>/join")
-@UserOptional
-def route_group_members_join(group_id: str = None):
-    user = session.get("user", {})
-    email = user.get("email", None)
-
-    if not email and request.args.get("login") == "true":
-        session["redirect_url"] = request.url
-        return redirect(url_for("route_login"))
-
-    group = get_group_as_user(group_id, email, with_members=False)
-    if not group:
-        return redirect(url_for("route_not_found"))
-
+def get_share_links(group_id: str):
     url = url_for("route_group_members_join", group_id=group_id, _external=True)
 
     qr = qrcode.QRCode(
@@ -248,7 +238,27 @@ def route_group_members_join(group_id: str = None):
 
     # 4. Encode those PNG bytes as Base64, then build a data URI:
     b64 = base64.b64encode(png_bytes).decode("ascii")
-    data_uri = f"data:image/png;base64,{b64}"
+    qr_data_uri = f"data:image/png;base64,{b64}"
+
+    return qr_data_uri, url
+
+
+@app.route("/group/<group_id>/leave")
+@app.route("/group/<group_id>/join")
+@UserOptional
+def route_group_members_join(group_id: str = None):
+    user = session.get("user", {})
+    email = user.get("email", None)
+
+    if not email and request.args.get("login") == "true":
+        session["redirect_url"] = request.url
+        return redirect(url_for("route_login"))
+
+    group = get_group_as_user(group_id, email, with_members=False)
+    if not group:
+        return redirect(url_for("route_not_found"))
+
+    data_uri, url = get_share_links(group_id)
 
     return render_template(
         "group_member_join.html",

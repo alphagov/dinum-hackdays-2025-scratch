@@ -28,7 +28,7 @@
             {% endif %}
             {% if group.allow_self_join %}
             <li>
-                <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" href="/group/{{ group.group_id }}/join">
+                <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline" href="/group/{{ group.group_id }}#join">
                     Share link to this group
                 </a>
             </li>
@@ -151,6 +151,21 @@
                     Delete Group
                 </button>
             </form>
+        </main>
+        {% endif %}
+
+        {% if group.allow_self_join %}
+        <main id="main-content-join" class="main-content hidden" role="main">
+            <h2 class="govuk-heading-l">
+                Share link to this group
+            </h2>
+            <p class="govuk-body">You can share this link with others to allow them to join the group:</p>
+            <div class="govuk-input__wrapper">
+                <img width=50% height=50% src="{{qr_code_data_uri}}" />
+            </div>
+            <div class="govuk-input__wrapper">
+                <input class="govuk-input" type="text" value="{{ share_url }}" readonly>
+            </div>
         </main>
         {% endif %}
     </div>
