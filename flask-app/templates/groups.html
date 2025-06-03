@@ -17,7 +17,10 @@
                 Group Name
             </th>
             <th scope="col" class="govuk-table__header">
-                Member
+                Membership
+            </th>
+            <th scope="col" class="govuk-table__header">
+                Actions
             </th>
         </tr>
         </tr>
@@ -28,6 +31,9 @@
             <td class="govuk-table__cell">
                 <a href="/group/{{ group.group_id }}" class="govuk-link govuk-link--no-visited-state govuk-link--no-underline">{{ group.group_name }}</a>
                 <p class="govuk-body-s">{{ group.description }}</p>
+            </td>
+            <td class="govuk-table__cell">
+                {{ group.group_visibility }}
             </td>
             <td class="govuk-table__cell" id="group-{{ group.group_id }}">
                 {% if group.is_member and group.could_leave %}
