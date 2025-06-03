@@ -10,6 +10,7 @@ GRIST_SERVER = os.getenv("GRIST_SERVER")
 
 grist = GristDocAPI(GRIST_DOC_ID, server=GRIST_SERVER)
 
+
 def create_group(group, user_email):
     # create a new group in the GroupMetadata table
     group_id = str(uuid.uuid4())
@@ -78,21 +79,32 @@ def get_groups_for_user(email):
             "group_name": group.GroupName,
             "is_member": is_member(group),
             "is_admin": is_admin(group),
-            "description": group.GroupDesc
+            "description": group.GroupDesc,
         }
         return l
 
     return map(convert_group, all_groups)
 
 
-def get_group_as_user(group_id, email):
+def split_string_to_list(string):
+    if not string:
+        return []
+    return [s.strip().lower() for s in string.split(",") if s.strip()]
+
+
+def get_group_as_user(group_id, email: str = None, with_members=True):
     group = grist.fetch_table("GroupMetadata", filters={"ID2": group_id})
     if not group:
         return None
 
-    user_groups = grist.fetch_table(
-        "Membership", filters={"UserEmail": email, "GroupID": group_id}
-    )
+    if email:
+        email = email.lower().strip()
+
+    user_groups = {}
+    if email:
+        user_groups = grist.fetch_table(
+            "Membership", filters={"UserEmail": email, "GroupID": group_id}
+        )
 
     def is_member():
         return len(user_groups) > 0
@@ -100,7 +112,33 @@ def get_group_as_user(group_id, email):
     def is_admin():
         return len(list(filter(lambda ul: ul.MemberType == "Owner", user_groups))) > 0
 
-    members = grist.fetch_table("Membership", filters={"GroupID": group_id})
+    members = []
+    if with_members:
+        members = grist.fetch_table("Membership", filters={"GroupID": group_id})
+
+    allowed_domains = split_string_to_list(group[0].AllowedDomains) or []
+    allowed_emails = split_string_to_list(group[0].AllowedEmails) or []
+
+    visibility_for_user = False
+    if group[0].GroupVisibility in ["Authorised", "Private"]:
+        if email:
+            if email in allowed_emails:
+                visibility_for_user = True
+            elif any(
+                email.endswith(domain.replace("*.", ".")) for domain in allowed_domains
+            ):
+                visibility_for_user = True
+            elif any(
+                email.endswith(f"@{domain}")
+                for domain in allowed_domains
+                if "*" not in domain
+            ):
+                visibility_for_user = True
+    elif group[0].GroupVisibility == "Any":
+        visibility_for_user = True
+
+    could_join = email and visibility_for_user and group[0].AllowSelfJoin
+    could_leave = email and visibility_for_user and group[0].AllowSelfLeave
 
     return {
         "_id": group[0].id,
@@ -109,7 +147,15 @@ def get_group_as_user(group_id, email):
         "members": members,
         "is_member": is_member(),
         "is_admin": is_admin(),
-        "description": group[0].GroupDesc
+        "description": group[0].GroupDesc,
+        "group_visibility": group[0].GroupVisibility,
+        "visibility_for_user": visibility_for_user,
+        "allowed_domains": allowed_domains,
+        "allowed_emails": allowed_emails,
+        "could_join": could_join,
+        "could_leave": could_leave,
+        "allow_self_join": group[0].AllowSelfJoin or False,
+        "allow_self_leave": group[0].AllowSelfLeave or False,
     }
 
 

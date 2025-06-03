@@ -164,33 +164,33 @@ def route_new_group():
     )
 
 
+@app.route("/group/<group_id>/leave")
 @app.route("/group/<group_id>/join")
-@RequireUser
+@UserOptional
 def route_group_members_join(group_id: str = None):
     user = session.get("user", {})
-    email = user.get("email")
+    email = user.get("email", None)
 
-    group = get_group_as_user(group_id, email)
-
-    return render_template(
-        "group_member_join.html",
-        group=group,
-    )
-
-
-@app.route("/group/<group_id>/leave")
-@RequireUser
-def route_group_members_leave(group_id: str = None):
-    user = session.get("user", {})
-    email = user.get("email")
+    if not email and request.args.get("login") == "true":
+        session["redirect_url"] = request.url
+        return redirect(url_for("route_login"))
 
     group = get_group_as_user(group_id, email)
     if not group:
         return redirect(url_for("route_not_found"))
 
     return render_template(
-        "group_member_leave.html",
+        "group_member_join.html",
         group=group,
+        user=user,
+        navigation=[
+            {"label": "Home", "url": url_for("route_root")},
+            {"label": "Groups", "url": url_for("route_groups"), "active": True},
+            {
+                "label": "Logout" if user else "Login",
+                "url": url_for("route_logout") if user else "?login=true",
+            },
+        ],
     )
 
 
