@@ -29,6 +29,7 @@
         <form action="{{ url_for('route_join_group', group_id=group.group_id) }}" method="post">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <input type="hidden" name="from_page" value="group_member_join">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <button
                     type="submit"
                     class="govuk-button govuk-button--primary"
@@ -44,6 +45,7 @@
         <form action="{{ url_for('route_leave_group', group_id=group.group_id) }}" method="post">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <input type="hidden" name="from_page" value="group_member_join">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <button
                     type="submit"
                     class="govuk-button govuk-button--warning"

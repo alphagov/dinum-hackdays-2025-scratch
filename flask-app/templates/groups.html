@@ -1,5 +1,6 @@
 {% extends '_' + design_type + '.html' %}
 
+
 {% block content %}
 <h1 class="govuk-heading-xl">Groups</h1>
 
@@ -39,6 +40,7 @@
                             hx-select="#group-{{ group.group_id }}"
                             hx-swap="outerHTML"
                             hx-disabled-elt="this"
+                            hx-indicator="#group-{{ group.group_id }}"
                             class="govuk-button govuk-button--warning">Leave Group</button>
                 </form>
                 {% else %}
@@ -51,9 +53,11 @@
                             hx-select="#group-{{ group.group_id }}"
                             hx-swap="outerHTML"
                             hx-disabled-elt="this"
+                            hx-indicator="#group-{{ group.group_id }}"
                             class="govuk-button ">Join Group</button>
                 </form>
                 {% endif %}
+                <p class="loading-container govuk-body-m">Loading...</p>
             </td>
         </tr>
         {% endfor %}

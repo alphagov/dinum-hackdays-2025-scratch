@@ -93,6 +93,20 @@
             </p>
         </div>
         <main class="govuk-main-wrapper" id="main-content">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                        <div class="govuk-notification-banner__content">
+                          <h3 class="govuk-notification-banner__heading">
+                            {{ message }}
+                          </h3>
+                        </div>
+                      </div>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
             {% block content %}
             {% endblock %}
         </main>

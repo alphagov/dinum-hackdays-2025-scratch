@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import os
-from flask import Flask, redirect, url_for, session, render_template, request
+from flask import Flask, redirect, url_for, session, render_template, request, flash
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 from auth_helpers import RequireUser, UserOptional, can_create_group
@@ -124,6 +124,7 @@ def route_delete_group():
 
     success = delete_group(group_id, email)
     if success:
+        flash("Group deleted successfully", "success")
         return redirect(url_for("route_groups"))
 
     return "Failed to delete group", 400
@@ -148,6 +149,7 @@ def route_new_group():
             "group_visibility": request.form.get("group_visibility", "Private"),
         }
         if group["group_name"]:
+            flash(f'Group "{group['group_name']}" created successfully', "success")
             group_id = create_group(group=group, user_email=email)
             if group_id:
                 return redirect(f"/group/{group_id}#settings")
@@ -266,6 +268,7 @@ def route_join_group(group_id):
     success = join_group(email, group_id)
 
     if success:
+        flash("Successfully joined group", "success")
         if from_page == "group_member_join":
             return redirect(url_for("route_group_members_join", group_id=group_id))
         return redirect(url_for("route_groups"))
@@ -283,6 +286,7 @@ def route_leave_group(group_id):
     success = leave_group(email, group_id)
 
     if success:
+        flash("Successfully left group", "success")
         if from_page == "group_member_join":
             return redirect(url_for("route_group_members_join", group_id=group_id))
         return redirect(url_for("route_groups"))

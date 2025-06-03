@@ -30,3 +30,15 @@
 .hidden {
     display: none;
 }
+
+.loading-container {
+    display: none
+}
+
+.htmx-request form {
+    display: none;
+}
+
+.htmx-request .loading-container {
+   display: block; 
+}
