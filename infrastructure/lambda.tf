@@ -138,7 +138,7 @@ resource "aws_cloudwatch_log_group" "lambda_lg" {
   retention_in_days = 14
 }
 
-resource "aws_cloudwatch_log_group" "lambda_lg" {
+resource "aws_cloudwatch_log_group" "lambda_lg_dsfr" {
   name              = "/aws/lambda/GovGroupsLambdaFunctionDSFR"
   retention_in_days = 14
 }
