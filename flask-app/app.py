@@ -128,10 +128,24 @@ def route_save_group():
     if group_visibility not in ["Private", "Authorised", "Any"]:
         return "Invalid group visibility", 400
 
+    allowed_domains = []
+    allowed_emails = []
+
+    combined_allowed = request.form.get("combined_allowed", "").strip()
+    for item in combined_allowed.split(","):
+        item = item.strip().lower()
+        if item:
+            if "@" in item:
+                allowed_emails.append(item)
+            else:
+                allowed_domains.append(item)
+
     group_changes = {
         "GroupID": group_id,
         "GroupDesc": group_desc,
         "GroupVisibility": group_visibility,
+        "AllowedDomains": ",".join(allowed_domains),
+        "AllowedEmails": ",".join(allowed_emails),
         "AllowSelfJoin": request.form.get("AllowJoin", "").strip() == "AllowJoin",
         "AllowSelfLeave": request.form.get("AllowLeave", "").strip() == "AllowLeave",
     }
